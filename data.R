@@ -33,13 +33,13 @@ library(ComplexHeatmap)
 library(circlize)
 
 
-# Setting the current working directory (figure out a more robust way of doing this later)
-setwd("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code")
-source("./src/metrics.R")
-source("./src/plotting.R")
-source("./src/bootstrap.R")
+# Gather the source R codes
+source("src/metrics.R", local = TRUE)
+source("src/plotting.R", local = TRUE)
+source("src/bootstrap.R", local = TRUE)
 
 ############################### Data Loading ###################################
+setwd("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code")
 DNA <- readRDS("./zymo_DNA.rds")
 RNA <- readRDS("./zymo_RNA.rds")
 

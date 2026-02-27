@@ -2,6 +2,11 @@
 # This is for the Bootstrapping components in the Thesis
 
 euclidean <- function(x,y){
+    #' Inputs:
+    #'      x, y: n-length vector of real numbers.
+    #'      
+    #'  Returns: Euclidean distance between x and y.
+    
     if (length(x) != length(y)){
         stop("Vectors are of different length!")
     }
@@ -10,22 +15,31 @@ euclidean <- function(x,y){
 
 
 BlockBootstrap <- function(df, b){
-    # df should be a data frame of temporal data points via rows. So t times r data frame.
-    # b is the block size of the bootstrapping.
+    #' Inputs:
+    #'      df: A data frame with ordered structure along the rows. 
+    #'      b: Positive integer that indicates the block size.
+    #'      
+    #' Returns: A block bootstrapped data frame from df.
+    
     df <- as.data.frame(df)
     
+    # Define the parameters
     n <- dim(df)[1]
     space <- floor(b/2)
     low <- space + 1
     high <- n - space 
     
-    if (low >= high){
-        stop("chosen b is not suitable!")
+    # Invalid choice of b
+    if (low >= high || !is.integer(b) || b <= 0){
+        stop("b value is not suitable!")
     }
     
+    # Randomise the ranges for a Bootstrapped dataset 
     indexrange <- low:high
     indices <- sample(indexrange, ceiling(n/b), replace = TRUE)
     newdf <- NULL
+    
+    # Odd case
     if (b %% 2 == 1){
         for (index in indices){
             adjustdf <- as.data.frame(df[(index - space):(index + space), ])
@@ -33,14 +47,16 @@ BlockBootstrap <- function(df, b){
             newdf <- rbind(newdf, adjustdf)
         }
     }
-    else{ # Splitting the even cases depending on whether accepting blocked values going up or down
+    else{ # Even case
         for (index in indices){
             bernoulli <- rbinom(1,1,1/2)
+            
+            # Extra block to the right
             if (bernoulli == 1){
                 adjustdf <- as.data.frame(df[(index - space + 1):(index + space), ])
                 colnames(adjustdf) <- colnames(df)
                 newdf <- rbind(newdf, adjustdf)
-            }
+            } # Extra block to the left
             else{
                 adjustdf <- as.data.frame(df[(index - space):(index + space - 1), ])
                 colnames(adjustdf) <- colnames(df)
@@ -48,7 +64,9 @@ BlockBootstrap <- function(df, b){
             }
         }
     }
-    newdf <- newdf[1:n, ] # truncate the final values to keep the data size the same (not perfect but is okay for now).
+    
+    # Truncate the final values to keep the data size the same.
+    newdf <- newdf[1:n, ] 
     
     return(newdf)
 }
