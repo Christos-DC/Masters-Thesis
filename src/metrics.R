@@ -220,7 +220,7 @@ hill <- function(sample1, sample2, q=1){
 # Calculating the distance between two samples depending on the metric function
 sampledist <- function(X, dis.func, dissim = TRUE, precision = 5, ...){
     #' Inputs:
-    #'      X: is either a matrix or data frame that is the species abundance
+    #'      X: is either a matrix or data frame that is the species abundance 
     #'         table; samples are in the rows and species are in the columns.
     #'      dis.func: function that calculates similarity.
     #'      precision: non-negative integer that outlines the decimal precision 
