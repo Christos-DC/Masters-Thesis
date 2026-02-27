@@ -73,14 +73,25 @@ BlockBootstrap <- function(df, b){
 
 MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, timeweight = FALSE, 
                        boot = TRUE,...){
-    # df is the original data frame of interest.
-    # func is the distance metric used to calculate the dissimilarity.
-    # reactor is about what reactor the sample groups are in.
-    # condition is about the type of group each reactor belongs too.
-    # timepts are the time points for the experiment.
-    # distdf is used if the df is an actual distance matrix or the raw abundance data.
-    # timeweight is a true/false variable that outlines whether the results account for the time distance between points or not.
-    # ... for any other parameters needed for the sampledist function.
+    #' Inputs:
+    #'      df: A data frame for the original abundance data or distance matrix
+    #'      func: A ecological metric of choice.
+    #'      reactor: vector of the reactors each sample groups are in.
+    #'      condition: vector of the condition each sample groups are in.
+    #'      timepts: vector of the time points each sample groups belong too.
+    #'      distdf: FALSE if df is raw abundance data. TRUE if df is distance matrix
+    #'      boot: Boolean value for performing blocked bootstrapping.
+    #'      ... : Additional parameters passed for the metric chosen.
+    #' 
+    #' Returns: A List containing the following
+    #'      meanvals: Vector of the mean values for each condition
+    #'      sdvals (boot = TRUE): Vector of the bootstrapped standard deviations for each condition.
+    #'      medianvals: Vector of the median values for each condition
+    #'      confint (boot = TRUE): Data frame of the 95% bootstrapped confidence intervals.
+    #'      Nconditions: Number of data points for each condition.
+    #'      time: The time it took to run the function.
+    
+    # Start the time 
     start <- Sys.time()
     
     # Get the mds data frame
@@ -96,29 +107,30 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
                               "Condition" = condition, "Time" = timepts)
     
     calcEuclidean <- function(df, n){
+        #' Inputs:
+        #'      df: Data frame of the coordinates from mds result.
+        #'      n: A positive integer of the number of points in df
+        #' 
+        #' Returns: A vector of weighted average distance values.
+        
         Distvals <- c()
-        # Weighted time average
-        if (timeweight){
-            for (i in 2:(n-1)){
-                distvaldown <- euclidean(df[i, c(1,2)], df[i-1, c(1,2)])
-                distvalup <- euclidean(df[i+1, c(1,2)], df[i, c(1,2)])
-                
-                timetotal <- abs(timepts[i+1] - timepts[i-1])
-                timedown <- abs(timepts[i] - timepts[i-1])
-                timeup <- abs(timepts[i+1] - timepts[i])
-                
-                distval <- timedown * distvaldown + timeup * distvalup
-                Distvals <- c(Distvals, distval)
-            }
-        } # Standard time average. (not sure if I need to keep this since I want to reflect the actual time differences. Probably can ask Saritha about this since I think it's redundant, but am keeping this for now to see if this properly works.)
-        else{
-            for (i in 2:(n-1)){
-                distvaldown <- euclidean(df[i, c(1,2)], df[i-1, c(1,2)])
-                distvalup <- euclidean(df[i+1, c(1,2)], df[i, c(1,2)])
-                distval <- (distvaldown + distvalup)/2
-                Distvals <- c(Distvals, distval)
-            }
+        
+        # Calculating weighted time average
+        for (i in 2:(n-1)){
+            # Distance between current point and its previous and future point.
+            distvaldown <- euclidean(df[i, c(1,2)], df[i-1, c(1,2)])
+            distvalup <- euclidean(df[i+1, c(1,2)], df[i, c(1,2)])
+            
+            # Gathering time weights
+            timetotal <- abs(timepts[i+1] - timepts[i-1])
+            timedown <- abs(timepts[i] - timepts[i-1])
+            timeup <- abs(timepts[i+1] - timepts[i])
+            
+            # Calculating weighted average.
+            distval <- timedown * distvaldown + timeup * distvalup
+            Distvals <- c(Distvals, distval)
         }
+        
         return(Distvals)
     }
     
@@ -129,17 +141,19 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
     NdistValues <- means <- sds <- medians <- rep(0, Nconditions) 
     ConfIntervals <- matrix(0, nrow = Nconditions, ncol = 2)
     
-    
-    N <- 1000 # How many bootstrap samples we want to include.
+    # How many bootstrap samples we want to include.
+    N <- 1000 
     for (k in 1:Nconditions){
+        # Filter data based on the condition
         condition_df <- dfReduction %>% filter(Condition == UniqueConditions[k])
         UniqueReactors <- unique(condition_df$Reactor)
         Nreactors <- length(UniqueReactors)
         
         Distvals <- NULL
         simDistvalsCond <- NULL
-        # Further filtering for each reactor in one condition group.
+        
         for (j in 1:Nreactors){
+            # Further filtering for each reactor in one condition group.
             reactor_df <- condition_df %>% filter(Reactor == UniqueReactors[j])
             reactor_df <- reactor_df %>% arrange(Time)
             n <- dim(reactor_df)[1]
@@ -149,6 +163,7 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
             reactDistvals <- calcEuclidean(reactor_df[,c(1,2)], n)
             Distvals <- c(Distvals, reactDistvals)
             
+            # If bootstrapping is set to TRUE calculate bootstrap samples
             if (boot){
                 simDistvalsReact <- NULL 
                 for (i in 1:N){
@@ -160,9 +175,11 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
             }
         }
         
+        # Collect statistics
         means[k] <- mean(Distvals)
         medians[k] <- median(Distvals)
         
+        # Gather bootstrapped statistics
         if (boot){
             avgDistvals <- rowMeans(simDistvalsCond)
             sds[k] <- sd(avgDistvals)
@@ -180,6 +197,7 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
     rownames(ConfIntervals) <- UniqueConditions
     
     end <- Sys.time() - start
+    # Return the appropriate list based on if bootstrapped is performed.
     if (boot){
         return(list(meanvals = means, sdvals = sds, medianvals = medians,
                     confint = ConfIntervals, Nconditions = NdistValues,
@@ -190,3 +208,12 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
                     Nconditions = NdistValues, time = end))
     }
 }
+
+
+
+
+
+
+
+
+
