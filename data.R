@@ -34,12 +34,13 @@ library(circlize)
 
 
 # Gather the source R codes
+setwd("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code")
 source("src/metrics.R", local = TRUE)
 source("src/plotting.R", local = TRUE)
 source("src/bootstrap.R", local = TRUE)
+source("src/kernels.R", local = TRUE)
 
 ############################### Data Loading ###################################
-setwd("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code")
 DNA <- readRDS("./zymo_DNA.rds")
 RNA <- readRDS("./zymo_RNA.rds")
 
@@ -87,8 +88,38 @@ RNA.1 <- t(RNA.1)
 RNA.1 <- low.count.removal(RNA.1)$data.filter
 
 
+########################## Legend Plot for MDS #################################
 
+# Plotting the legend plot for Control, Inhibition 1 and 2.
+mintime <- min(DNA.3$week_from_salt1)
+maxtime <- max(DNA.3$week_from_salt1)
+n <- 100
+weeks <- round(seq(mintime, maxtime, length.out = n), 4)
 
+# Gather the blended colours over time.
+legend_df <- expand.grid(sort(names(base_colours)), weeks)
+colnames(legend_df) <- c("condition", "week")
+legend_df$color <- blend_with_white(base_colours[legend_df$condition], as.numeric(legend_df$week)) 
+
+# Legend plot (compact, horizontal)
+legend_plot <- ggplot(legend_df, aes(x = week, y = condition, fill = color)) +
+    geom_tile(height = 0.6) +
+    scale_fill_identity() +
+    theme_minimal(base_size = 7) +
+    labs(x = "Week", y = NULL) +
+    scale_x_continuous(breaks = seq(-3,11, by=1)) +
+    theme(
+        axis.text = element_text(size = 10),
+        axis.title.x = element_text(size = 12),
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        plot.margin = margin(0, 0, 0, 0),
+        plot.background = element_rect(fill = "white", color = NA)
+    )
+
+# Control the dimension of the plot
+wrapped_legend <- wrap_elements(legend_plot) +
+    plot_layout(widths = unit(0.5, "npc"))
 
 
 

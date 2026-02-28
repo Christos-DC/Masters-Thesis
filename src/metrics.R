@@ -35,7 +35,7 @@ Bray_Curtis <- function(sample1, sample2){
 
 
 # Calculates the PCA Bray-Curtis value between two sample groups.
-Bray_Curtis_pca <- function(sample1, sample2){
+PCA_Bray_Curtis <- function(sample1, sample2){
     #' Inputs:
     #'      sample1: A vector of integers representing the first sample group
     #'      sample2: A vector of integers representing the second sample group

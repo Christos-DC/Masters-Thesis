@@ -39,10 +39,10 @@ blend_with_white <- function(colours, timepts){
 }
 
 # The base colours for the three groups
-base_colors <- c("control" = "red", "inhib_1" = "blue", "inhib_2" = "green")
+base_colours <- c("control" = "red", "inhib_1" = "blue", "inhib_2" = "green")
 
 # MDS plot function for the Zymo dataset
-mdsplotfunc <- function(df, title){
+mdsplotfunc <- function(df, condition, timepts, title){
     #' Inputs:
     #'      df: Data Frame of the distance matrix.
     #'      title: String that outlines the title of the plot.
@@ -53,11 +53,11 @@ mdsplotfunc <- function(df, title){
     
     # Perform MDS on the distance matrix
     mdsresult <- mds(df, type = "ordinal")
-    mdsresult_conf <- as.data.frame(cbind(mdsresult$conf, "time" = DNA.3$week_from_salt1, "condition" = DNA.3$condition))
+    mdsresult_conf <- as.data.frame(cbind(mdsresult$conf, "time" = timepts, "condition" = condition))
     mdsresult_conf[,1:3] <- sapply(mdsresult_conf[,1:3], as.numeric)
     
     # Gather the colours for the different groups
-    hex_colors <- blend_with_white(base_colors[mdsresult_conf$condition], mdsresult_conf$time)
+    hex_colors <- blend_with_white(base_colours[mdsresult_conf$condition], mdsresult_conf$time)
     
     # Plotting the results
     mdsplot <- mdsresult_conf %>% 
@@ -81,36 +81,6 @@ mdsplotfunc <- function(df, title){
 
 
 
-# Plotting the legend plot for Control, Inhibition 1 and 2.
-mintime <- min(DNA.3$week_from_salt1)
-maxtime <- max(DNA.3$week_from_salt1)
-n <- 100
-weeks <- round(seq(mintime, maxtime, length.out = n), 4)
-
-# Gather the blended colours over time.
-legend_df <- expand.grid(sort(names(base_colors)), weeks)
-colnames(legend_df) <- c("condition", "week")
-legend_df$color <- blend_with_white(base_colors[legend_df$condition], as.numeric(legend_df$week)) 
-
-# Legend plot (compact, horizontal)
-legend_plot <- ggplot(legend_df, aes(x = week, y = condition, fill = color)) +
-    geom_tile(height = 0.6) +
-    scale_fill_identity() +
-    theme_minimal(base_size = 7) +
-    labs(x = "Week", y = NULL) +
-    scale_x_continuous(breaks = seq(-3,11, by=1)) +
-    theme(
-        axis.text = element_text(size = 10),
-        axis.title.x = element_text(size = 12),
-        panel.grid = element_blank(),
-        axis.ticks = element_blank(),
-        plot.margin = margin(0, 0, 0, 0),
-        plot.background = element_rect(fill = "white", color = NA)
-    )
-
-# Control the dimension of the plot
-wrapped_legend <- wrap_elements(legend_plot) +
-    plot_layout(widths = unit(0.5, "npc"))
 
 
 
