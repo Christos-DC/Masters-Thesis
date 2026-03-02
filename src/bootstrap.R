@@ -30,7 +30,7 @@ BlockBootstrap <- function(df, b){
     high <- n - space 
     
     # Invalid choice of b
-    if (low >= high || !is.integer(b) || b <= 0){
+    if (low >= high){
         stop("b value is not suitable!")
     }
     
@@ -71,8 +71,8 @@ BlockBootstrap <- function(df, b){
     return(newdf)
 }
 
-MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, timeweight = FALSE, 
-                       boot = TRUE,...){
+MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE,  
+                       boot = TRUE, ...){
     #' Inputs:
     #'      df: A data frame for the original abundance data or distance matrix
     #'      func: A ecological metric of choice.
@@ -167,7 +167,8 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE, ti
             if (boot){
                 simDistvalsReact <- NULL 
                 for (i in 1:N){
-                    simVals<- BlockBootstrap(reactDistvals, 2) #choosing 2 because of the way the distance is calculated.
+                    # Choosing block size of 2 
+                    simVals<- BlockBootstrap(reactDistvals, 2) 
                     simVals <- t(as.data.frame(simVals))
                     simDistvalsReact <- rbind(simDistvalsReact, simVals)
                 }

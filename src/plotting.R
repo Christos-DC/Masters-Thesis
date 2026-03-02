@@ -71,10 +71,10 @@ mdsplotfunc <- function(df, condition, timepts, title){
         theme(plot.background = element_rect(fill = "white", color = NA),
               panel.background = element_rect(fill = "white", color = NA),
               panel.border = element_rect(fill = NA, color = "black"),
-              plot.title = element_text(size = 10))
+              plot.title = element_text(size = 12))
     
     # Getting the stress of the mds plot
-    mdsStress <- mds$stress
+    mdsStress <- mdsresult$stress
     
     return(list(mdsplot=mdsplot, stress=mdsStress))
 }
