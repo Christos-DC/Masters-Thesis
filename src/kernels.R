@@ -107,5 +107,9 @@ penaltyfunc <- function(df, metric, reactor, timepts, kernelfunc, lambda){
         index <- index + nsamp
     }
     
+    # Remove the reactor and time columns
+    col_len <- dim(Distdf)[2]    
+    Distdf <- Distdf[, -c(col_len - 1, col_len)]
+    
     return(Distdf)
 }
