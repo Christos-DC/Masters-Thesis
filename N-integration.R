@@ -15,8 +15,6 @@ pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
 compsDNA <- pls.result$variates$X
 compsRNA <- pls.result$variates$Y
 
-# View(compsDNA)
-# View(compsRNA)
 rownames(compsRNA) <- rownames(RNA.1)
 
 
@@ -50,10 +48,15 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # What does averaging the components do?
-compsCombined <- (compsDNA + compsRNA)/2
+#compsCombined <- (compsDNA + compsRNA)/2
+
+# This is simply joining the components together. This seems to work well with PLS compared to PCA. Might be because the PLS has components that account for the relationship between the two datasets.
+compsCombined <- cbind(compsDNA, compsRNA)
+
+
 
 Comb_PLSBray <- sampledist(compsCombined, PCA_Bray_Curtis)
-title <- paste("MDS plot: PLS Bray-Curtis (DNA and RNA) with", ncomps, "components.", sep = " ")
+title <- paste("MDS plot: PLS Bray-Curtis (DNA and RNA) with", 2*ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(Comb_PLSBray, conditions, timepts, title)
 MDSstructure$stress
@@ -61,6 +64,46 @@ MDSstructure$stress
 MDSplt <- MDSstructure$mdsplot
 MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
+
+# Seeing the numerical side of things
+numerics <- MDSnumeric(df = compsCombined,
+                       func = PCA_Bray_Curtis,
+                       reactor = reactors,
+                       condition = conditions,
+                       timepts = timepts,
+                       distdf = FALSE)
+
+numerics
+
+
+# Presentation purposes
+c1 <- (compsDNA + compsRNA)/2
+c2 <- cbind(compsDNA, compsRNA)
+
+c1_PLSBray <- penaltyfunc(df = c1,
+                          metric = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          timepts = timepts,
+                          kernelfunc = linearkernel,
+                          lambda = 0)
+
+c2_PLSBray <- penaltyfunc(df = c2,
+                          metric = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          timepts = timepts,
+                          kernelfunc = linearkernel,
+                          lambda = 0)
+
+MDS1 <- mdsplotfunc(c1_PLSBray, conditions, timepts, "Average Components")
+MDS2 <- mdsplotfunc(c2_PLSBray, conditions, timepts, "Joining Components")
+
+plt1 <- MDS1$mdsplot
+plt2 <- MDS2$mdsplot
+
+(plt1 + theme(legend.position = "none") | plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+    plot_layout(heights = c(5,1.5)) +
+    plot_annotation(title = "Comparing Approach 1 and 2", 
+                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ################################################################################
 
@@ -118,7 +161,10 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # What does averaging the components do?
-compsCombined <- (compsDNA + compsRNA)/2
+#compsCombined <- (compsDNA + compsRNA)/2
+
+# This is simply joining the components together. This seems to work well with PLS compared to PCA. Might be because the PLS has components that account for the relationship between the two datasets.
+compsCombined <- cbind(compsDNA, compsRNA)
 
 Comb_PLSBray <- penaltyfunc(df = compsCombined,
                             metric = PCA_Bray_Curtis,
@@ -126,7 +172,7 @@ Comb_PLSBray <- penaltyfunc(df = compsCombined,
                             timepts = timepts,
                             kernelfunc = linearkernel,
                             lambda = lambda)
-title <- paste("MDS plot: PLS Bray-Curtis (DNA and RNA) with", ncomps, "components. Using Linear Kernel", sep = " ")
+title <- paste("MDS plot: PLS Bray-Curtis (DNA and RNA) with", 2*ncomps, "components. Using Linear Kernel", sep = " ")
 
 MDSstructure <- mdsplotfunc(Comb_PLSBray, conditions, timepts, title)
 MDSstructure$stress
@@ -135,8 +181,46 @@ MDSplt <- MDSstructure$mdsplot
 MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
+# Seeing the numerical side of things
+numerics <- MDSnumeric(df = compsCombined,
+                       func = PCA_Bray_Curtis,
+                       reactor = reactors,
+                       condition = conditions,
+                       timepts = timepts,
+                       distdf = FALSE)
+
+numerics
 
 
+
+# Presentation purposes
+c1 <- (compsDNA + compsRNA)/2
+c2 <- cbind(compsDNA, compsRNA)
+
+c1_PLSBray <- penaltyfunc(df = c1,
+                          metric = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          timepts = timepts,
+                          kernelfunc = linearkernel,
+                          lambda = lambda)
+
+c2_PLSBray <- penaltyfunc(df = c2,
+                          metric = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          timepts = timepts,
+                          kernelfunc = linearkernel,
+                          lambda = lambda)
+
+MDS1 <- mdsplotfunc(c1_PLSBray, conditions, timepts, "Average Components")
+MDS2 <- mdsplotfunc(c2_PLSBray, conditions, timepts, "Joining Components")
+
+plt1 <- MDS1$mdsplot
+plt2 <- MDS2$mdsplot
+
+(plt1 + theme(legend.position = "none") | plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+    plot_layout(heights = c(5,1.5)) +
+    plot_annotation(title = "Comparing Approach 1 and 2", 
+                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 
 ################################################################################
@@ -279,6 +363,38 @@ combined_plt <- (RNA_PCAplt + theme(legend.position = "none") | RNA_PLSplt + the
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 combined_plt
+
+
+
+################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

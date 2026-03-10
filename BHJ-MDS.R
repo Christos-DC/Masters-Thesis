@@ -20,6 +20,15 @@ MDSplt <- MDSstructure$mdsplot
 MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
+numerics <- MDSnumeric(df = DNABray,
+           func = PCA_Bray_Curtis,
+           reactor = reactors,
+           condition = conditions,
+           timepts = timepts,
+           distdf = TRUE)
+numerics
+
+
 # Bray-Curtis (RNA)
 RNABray <- sampledist(RNA.1, Bray_Curtis)
 title <- "MDS plot for Bray-Curtis (RNA)"
