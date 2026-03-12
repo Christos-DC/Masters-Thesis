@@ -45,6 +45,8 @@ base_colours <- c("control" = "red", "inhib_1" = "blue", "inhib_2" = "green")
 mdsplotfunc <- function(df, condition, timepts, title){
     #' Inputs:
     #'      df: Data Frame of the distance matrix.
+    #'      condition: vector outlines the conditions the data points are in.
+    #'      timepts: The time points of when the abundance data was collected.
     #'      title: String that outlines the title of the plot.
     #'      
     #' Return: A list containing
