@@ -33,19 +33,7 @@ df1 <- matrix(0, nrow = timelength, ncol = 2)
 colnames(df1) <- c("Day", "Salt")
 df1[,1] <- timepts
 
-# n <- dim(inhib1_time)[1]
-# for (i in 2:n){
-#     pt1 <- inhib1_time[,2][i-1]
-#     pt2 <- inhib1_time[,2][i]
-#     salt1 <- inhib1_time[,3][i-1]
-#     salt2 <- inhib1_time[,3][i]
-#     
-#     bw_time <- seq(pt1, pt2)
-#     salt_pred <- rev(seq(salt2, salt1, length.out = pt2 - pt1 + 1))
-#     
-#     df1[bw_time + 1, 2] <- salt_pred
-# }
-
+# Outlining the general trend for salt concentration in experiment
 expinterp <- function(x, pt1, pt2){
     x1 <- pt1[1]
     x2 <- pt2[1]
@@ -69,7 +57,7 @@ plt1 <- df1 %>% ggplot(aes(x=Day, y = Salt)) +
     geom_point(size = 2) +
     theme_minimal() +
     annotate("text", x = 75, y = 25, label = "Inhibition 1", colour = "blue", size = 6) +
-    geom_rect(aes(xmin = 125, xmax = 200, ymin = -0.1, ymax = 30), fill = NA, color = "blue",
+    geom_rect(aes(xmin = 125, xmax = 210, ymin = -0.1, ymax = 30), fill = NA, color = "blue",
               linewidth = 1) +
     theme(axis.title = element_text(size = 16),
           axis.text.x = element_text(size = 12),
@@ -85,19 +73,7 @@ df2 <- matrix(0, nrow = timelength, ncol = 2)
 colnames(df2) <- c("Day", "Salt")
 df2[,1] <- timepts
 
-# n <- dim(inhib2_time)[1]
-# for (i in 2:n){
-#     pt1 <- inhib2_time[,2][i-1]
-#     pt2 <- inhib2_time[,2][i]
-#     salt1 <- inhib2_time[,3][i-1]
-#     salt2 <- inhib2_time[,3][i]
-#     
-#     bw_time <- seq(pt1, pt2)
-#     print(bw_time)
-#     salt_pred <- rev(seq(salt2, salt1, length.out = pt2 - pt1 + 1))
-#     
-#     df2[bw_time + 1, 2] <- salt_pred
-# }
+
 pt1 <- as.numeric(inhib2_time[1, c(2,3)])
 pt2 <- as.numeric(inhib2_time[9, c(2,3)])
 df2[385:446 + 1, 2] <- expinterp(385:446, pt1, pt2)
