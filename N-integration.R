@@ -12,10 +12,63 @@ X2 <- logratio.transfo(RNA.1 + 0.001, logratio = "CLR")
 
 pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
 
+# Plotting to check the correlation between the two datasets.
+zymo_groups <- factor(c(DNA.3[["condition"]]))
+hex_colors <- blend_with_white(base_colours[conditions], timepts)
+pch_vals <- c(
+    "control" = 16,
+    "inhib_1" = 17,
+    "inhib_2" = 15
+)
+
+plotIndiv(pls.result, ind.names = FALSE, group = zymo_groups, 
+          col = c("red","blue","green"), legend = TRUE,
+          legend.title = "Condition", pch = pch_vals)
+
+
 compsDNA <- pls.result$variates$X
 compsRNA <- pls.result$variates$Y
-
 rownames(compsRNA) <- rownames(RNA.1)
+
+
+# Making our own PLS plots for DNA and RNA
+df_compsDNA <- data.frame(compsDNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+
+pls_plt1 <- df_compsDNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition)) +
+    geom_point(aes(color = colour), size = 3) +
+    labs(title = "X = DNA", shape = "Condition",
+         x = "variate 1", y = "variate 2") +
+    scale_color_identity() +
+    theme(legend.title = element_text("Condition")) +
+    theme_minimal() +
+    theme(plot.background = element_rect(fill = "white", color = NA),
+          panel.background = element_rect(fill = "white", color = NA),
+          panel.border = element_rect(fill = NA, color = "black"),
+          plot.title = element_text(size = 12, hjust = 0.5))
+
+df_compsRNA <- data.frame(compsRNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+
+pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition)) +
+    geom_point(aes(color = colour), size = 3) +
+    labs(title = "Y = RNA", shape = "Condition",
+         x = "variate 1", y = "variate 2") +
+    scale_color_identity() +
+    theme(legend.title = element_text("Condition")) +
+    theme_minimal() +
+    theme(plot.background = element_rect(fill = "white", color = NA),
+          panel.background = element_rect(fill = "white", color = NA),
+          panel.border = element_rect(fill = NA, color = "black"),
+          plot.title = element_text(size = 12, hjust = 0.5))
+
+(pls_plt1 + theme(legend.position = "none") | 
+        pls_plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+    plot_layout(heights = c(5,1.3)) +
+    plot_annotation(title = "PLS for DNA and RNA", 
+                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+
+
+# Calculating the correlation between the components.
+cor(compsDNA, compsRNA)
 
 
 # Defining the parameters
@@ -48,10 +101,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # What does averaging the components do?
-#compsCombined <- (compsDNA + compsRNA)/2
-
-# This is simply joining the components together. This seems to work well with PLS compared to PCA. Might be because the PLS has components that account for the relationship between the two datasets.
-compsCombined <- cbind(compsDNA, compsRNA)
+compsCombined <- (compsDNA + compsRNA)/2
 
 
 
@@ -116,7 +166,6 @@ pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
 
 compsDNA <- pls.result$variates$X
 compsRNA <- pls.result$variates$Y
-
 rownames(compsRNA) <- rownames(RNA.1)
 
 
@@ -256,8 +305,8 @@ rownames(compsRNA) <- rownames(RNA.1)
 DNA_PCABray <- sampledist(PCAcompsDNA, PCA_Bray_Curtis)
 DNA_PLSBray <- sampledist(PLScompsDNA, PCA_Bray_Curtis)
 
-MDS_DNA_PCA <- mdsplotfunc(DNA_PCABray, conditions, timepts, "PCA")
-MDS_DNA_PLS <- mdsplotfunc(DNA_PLSBray, conditions, timepts, "PLS")
+MDS_DNA_PCA <- mdsplotfunc(DNA_PCABray, conditions, timepts, "PCA (DNA)")
+MDS_DNA_PLS <- mdsplotfunc(DNA_PLSBray, conditions, timepts, "PLS (DNA)")
 
 MDS_DNA_PCA$stress
 MDS_DNA_PLS$stress
@@ -278,8 +327,8 @@ combined_plt
 RNA_PCABray <- sampledist(PCAcompsRNA, PCA_Bray_Curtis)
 RNA_PLSBray <- sampledist(PLScompsRNA, PCA_Bray_Curtis)
 
-MDS_RNA_PCA <- mdsplotfunc(RNA_PCABray, conditions, timepts, "PCA")
-MDS_RNA_PLS <- mdsplotfunc(RNA_PLSBray, conditions, timepts, "PLS")
+MDS_RNA_PCA <- mdsplotfunc(RNA_PCABray, conditions, timepts, "PCA (RNA)")
+MDS_RNA_PLS <- mdsplotfunc(RNA_PLSBray, conditions, timepts, "PLS (RNA)")
 
 MDS_RNA_PCA$stress
 MDS_RNA_PLS$stress
@@ -294,6 +343,21 @@ combined_plt <- (RNA_PCAplt + theme(legend.position = "none") | RNA_PLSplt + the
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 combined_plt
+
+
+
+# Putting these into a four panel plot for comparing the DNA and RNA for PCA and PLS methods
+title <- paste("PCA vs PLS on both the DNA and RNA datasets with", ncomps, "components.", sep = " ")
+(DNA_PCAplt + theme(legend.position = "none", axis.title.x = element_blank()) | 
+        DNA_PLSplt + theme(axis.title.y = element_blank(), axis.title.x = element_blank(), legend.position = "none")) /
+    (RNA_PCAplt + theme(legend.position = "none") | 
+         RNA_PLSplt + theme(axis.title.y = element_blank(), legend.position = c(1.1,1.1))) /
+    wrapped_legend +
+    plot_layout(heights = c(3,3,1.3)) +
+    plot_annotation(title = title, 
+                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5),
+                                  plot.margin = unit(c(0.5, 3, 0, 0), "cm")))
+
 
 
 
