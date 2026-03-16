@@ -2,7 +2,6 @@
 # This is the N-integration Step for the Zymo Dataset
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
-
 ################################################################################
 
 # This is just a simple N-integration step without any time adjustment.
@@ -20,10 +19,6 @@ pch_vals <- c(
     "inhib_1" = 17,
     "inhib_2" = 15
 )
-
-plotIndiv(pls.result, ind.names = FALSE, group = zymo_groups, 
-          col = c("red","blue","green"), legend = TRUE,
-          legend.title = "Condition", pch = pch_vals)
 
 
 compsDNA <- pls.result$variates$X
@@ -69,12 +64,6 @@ pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
 
 # Calculating the correlation between the components.
 cor(compsDNA, compsRNA)
-
-
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
 
 # For the DNA component
 DNA_PLSBray <- sampledist(compsDNA, PCA_Bray_Curtis)
@@ -347,7 +336,7 @@ combined_plt
 
 
 # Putting these into a four panel plot for comparing the DNA and RNA for PCA and PLS methods
-title <- paste("PCA vs PLS on both the DNA and RNA datasets with", ncomps, "components.", sep = " ")
+title <- paste("NMDS Plots: PCA vs PLS on both the DNA and RNA datasets with", ncomps, "components.", sep = " ")
 (DNA_PCAplt + theme(legend.position = "none", axis.title.x = element_blank()) | 
         DNA_PLSplt + theme(axis.title.y = element_blank(), axis.title.x = element_blank(), legend.position = "none")) /
     (RNA_PCAplt + theme(legend.position = "none") | 
@@ -432,6 +421,29 @@ combined_plt
 
 ################################################################################
 
+# Get PCA components
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+PCAcompsDNA <- pca.DNA$variates$X
+
+pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+PCAcompsRNA <- pca.RNA$variates$X
+
+# Get PLS components
+X1 <- logratio.transfo(DNA.1 + 0.001, logratio = "CLR")
+X2 <- logratio.transfo(RNA.1 + 0.001, logratio = "CLR")
+
+pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
+
+PLScompsDNA <- pls.result$variates$X
+PLScompsRNA <- pls.result$variates$Y
+
+rownames(compsRNA) <- rownames(RNA.1)
+
+# Checking and comparing correlation
+cor(PCAcompsDNA, PCAcompsRNA)
+cor(PLScompsDNA, PLScompsRNA)
+
+# (Attempt) Integrating with PCA components like it's done with PLS
 
 
 

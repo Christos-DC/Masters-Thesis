@@ -88,6 +88,11 @@ RNA.1 <- t(RNA.1)
 RNA.1 <- low.count.removal(RNA.1)$data.filter
 
 
+# Defining the relevant parameters
+conditions <- DNA.3$condition
+reactors <- DNA.3$reactor
+timepts <- DNA.3$week_from_salt1
+
 ########################## Legend Plot for MDS #################################
 
 # Plotting the legend plot for Control, Inhibition 1 and 2.

@@ -10,7 +10,7 @@ timepts <- DNA.3$week_from_salt1
 
 ################################################################################
 
-# Figure 3.2
+# Figure 3.2 - Salt Concentration
 which(DNA.3$NaCl..g.L. != RNA.3$NaCl..g.L.)
 
 SaltCon <- DNA.3$NaCl..g.L. 
@@ -23,10 +23,6 @@ inhib1_time <- df[87:98, ]
 inhib2_time <- df[12:20, ]
 
 # For the Inhibition 1 group
-# inhib1_time[13,] <- c("inhib_1", 230, 0)
-# inhib1_time[,2] <- as.integer(inhib1_time[,2])
-# inhib1_time[,3] <- as.numeric(inhib1_time[,3])
-
 timepts <- seq(0, 446)
 timelength <- length(timepts)
 df1 <- matrix(0, nrow = timelength, ncol = 2)
@@ -49,7 +45,6 @@ expinterp <- function(x, pt1, pt2){
 pt1 <- as.numeric(inhib1_time[1, c(2,3)])
 pt2 <- as.numeric(inhib1_time[12, c(2,3)])
 df1[131:299 + 1, 2] <- expinterp(131:299, pt1, pt2)
-
 
 
 df1 <- as.data.frame(df1)
@@ -96,7 +91,7 @@ plt2 <- df2 %>% ggplot(aes(x=Day, y = Salt)) +
           panel.grid.minor = element_blank()) +
     labs(y = "Salt Concentration")
     
-
+# Combined Plot
 (plt2 / plt1) +
     plot_layout(axis_titles = "collect") +
     plot_annotation(title = "Salt concentration in the Continuous Stirred-Tank Reactor", 
