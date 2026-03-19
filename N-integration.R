@@ -37,7 +37,7 @@ pls_plt1 <- df_compsDNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "white", color = NA),
+          panel.background = element_rect(fill = "#FFFFF9", color = NA),
           panel.border = element_rect(fill = NA, color = "black"),
           plot.title = element_text(size = 12, hjust = 0.5))
 
@@ -51,7 +51,7 @@ pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "white", color = NA),
+          panel.background = element_rect(fill = "#FFFFF9", color = NA),
           panel.border = element_rect(fill = NA, color = "black"),
           plot.title = element_text(size = 12, hjust = 0.5))
 
@@ -443,7 +443,7 @@ rownames(compsRNA) <- rownames(RNA.1)
 cor(PCAcompsDNA, PCAcompsRNA)
 cor(PLScompsDNA, PLScompsRNA)
 
-# (Attempt) Integrating with PCA components like it's done with PLS
+# (Attempt) Integrating with PCA components like it's done with PLS (show why this doesn't work)
 
 
 
