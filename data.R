@@ -29,8 +29,8 @@ library(patchwork)
 # library(devtools)
 # install_github("jokergoo/ComplexHeatmap")
 
-library(ComplexHeatmap)
-library(circlize)
+# library(ComplexHeatmap)
+# library(circlize)
 
 
 # Gather the source R codes
