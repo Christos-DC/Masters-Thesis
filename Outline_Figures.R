@@ -453,7 +453,7 @@ pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
 PLScompsDNA <- pls.result$variates$X
 PLScompsRNA <- pls.result$variates$Y
 
-rownames(compsRNA) <- rownames(RNA.1)
+rownames(PLScompsRNA) <- rownames(RNA.1)
 
 
 # DM Bray Curtis on DNA and RNA plots 
@@ -465,7 +465,7 @@ MDSstructure$stress
 
 PLS_DNA_MDSplt0 <- MDSstructure$mdsplot
 PLS_DNA_MDSplt0 <- PLS_DNA_MDSplt0 + 
-    ylab(expression(atop(bold("PCA Bray-Curtis"), "D2"))) +
+    ylab(expression(atop(bold("PLS Bray-Curtis"), "D2"))) +
     theme(legend.position = "none",
           axis.title.x = element_blank(),
           axis.title.y = element_text(size = 12),
@@ -491,20 +491,21 @@ PLS_RNA_MDSplt0
 
 
 #DM Bray Curtis on DNA and RNA with time adjustment λ=1
+lambda <- 1
 DNA_PLSBray <- penaltyfunc(df = PLScompsDNA,
                            metric = PCA_Bray_Curtis,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
                            lambda = lambda)
-title <- expression(bold("PCA Bray-Curtis with Time-Scale (λ=1)"))
+title <- expression(bold("PLS Bray-Curtis with Time-Scale (λ=1)"))
 
 MDSstructure <- mdsplotfunc(DNA_PLSBray, conditions, timepts, title)
 MDSstructure$stress
 
 PLS_DNA_MDSplt1 <- MDSstructure$mdsplot
 PLS_DNA_MDSplt1 <- PLS_DNA_MDSplt1 + 
-    ylab(expression(atop(bold("PCA Bray-Curtis with Time-Scale (λ=1)"), "D2"))) +
+    ylab(expression(atop(bold("PLS Bray-Curtis with Time-Scale (λ=1)"), "D2"))) +
     theme(legend.position = "none",
           axis.title.x = element_text(size = 12),
           axis.title.y = element_text(size = 12),
@@ -518,7 +519,7 @@ RNA_PLSBray <- penaltyfunc(df = PLScompsRNA,
                            timepts = timepts,
                            kernelfunc = linearkernel,
                            lambda = lambda)
-title <- expression(bold("PCA Bray-Curtis with Time-Scale (λ=1)"))
+title <- expression(bold("PLS Bray-Curtis with Time-Scale (λ=1)"))
 
 MDSstructure <- mdsplotfunc(RNA_PLSBray, conditions, timepts, title)
 MDSstructure$stress
@@ -536,7 +537,7 @@ PLS_RNA_MDSplt1
 # Doing the integration step
 
 ## Combining the components together
-compsCombined <- (compsDNA + compsRNA)/2
+compsCombined <- (PLScompsDNA + PLScompsRNA)/2
 INTG_PLSBray <- sampledist(compsCombined, PCA_Bray_Curtis)
 
 title <- expression(bold("Integrated"))
@@ -555,7 +556,7 @@ PLS_INTG_MDSplt0
 
 ## With lambda = 1
 lambda <- 1
-compsCombined <- (compsDNA + compsRNA)/2
+compsCombined <- (PLScompsDNA + PLScompsRNA)/2
 INTG_PLSBray <- penaltyfunc(df = compsCombined,
                            metric = PCA_Bray_Curtis,
                            reactor = reactors,
