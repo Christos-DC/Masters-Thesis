@@ -3,11 +3,6 @@
 #' that are made in R.
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
-
 ################################################################################
 
 # Figure 3.2 - Salt Concentration
@@ -151,7 +146,11 @@ MDSstructure$stress
 
 MDS_RNAplt <- MDSstructure$mdsplot
 
-plt <- (MDS_DNAplt + theme(legend.position = "none")| MDS_RNAplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
+
+MDS_DNAplt <- MDS_DNAplt + theme(legend.position = "none")
+MDS_RNAplt <- MDS_RNAplt + theme(axis.title.y = element_blank())
+
+plt <- (MDS_DNAplt | MDS_RNAplt) / wrapped_legend + 
     plot_layout(heights = c(5,1.5)) +
     plot_annotation(title = "NMDS on Jaccard Distance Matrix", 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -162,16 +161,91 @@ ggsave("Jaccard.png", plot = plt, path = "./figures/",
 
 
 
+################################################################################
+
+# Figure - Hill-based on DNA and RNA data for q=0,1,2
+
+title <- "DNA"
+DNAHill0 <- sampledist(DNA.1, hill, q = 0)
+DNAHill1 <- sampledist(DNA.1, hill, q = 1)
+DNAHill2 <- sampledist(DNA.1, hill, q = 2)
+
+MDSstructure <- mdsplotfunc(DNAHill0, conditions, timepts, title)
+MDSstructure$stress
+MDS_DNAplt0 <- MDSstructure$mdsplot
+
+MDSstructure <- mdsplotfunc(DNAHill1, conditions, timepts, title)
+MDSstructure$stress
+MDS_DNAplt1 <- MDSstructure$mdsplot
+
+MDSstructure <- mdsplotfunc(DNAHill2, conditions, timepts, title)
+MDSstructure$stress
+MDS_DNAplt2 <- MDSstructure$mdsplot
+
+
+title <- "RNA"
+RNAHill0 <- sampledist(RNA.1, hill, q = 0)
+RNAHill1 <- sampledist(RNA.1, hill, q = 1)
+RNAHill2 <- sampledist(RNA.1, hill, q = 2)
+
+MDSstructure <- mdsplotfunc(RNAHill0, conditions, timepts, title)
+MDSstructure$stress
+MDS_RNAplt0 <- MDSstructure$mdsplot
+
+MDSstructure <- mdsplotfunc(RNAHill1, conditions, timepts, title)
+MDSstructure$stress
+MDS_RNAplt1 <- MDSstructure$mdsplot
+
+MDSstructure <- mdsplotfunc(RNAHill2, conditions, timepts, title)
+MDSstructure$stress
+MDS_RNAplt2 <- MDSstructure$mdsplot
+
+
+# Adjusting the plots
+MDS_DNAplt0 <- MDS_DNAplt0 + theme(axis.title.x = element_blank(), 
+                                   legend.position = "none") +
+    ylab(expression(atop("q=0", "D2"))) 
+
+MDS_DNAplt1 <- MDS_DNAplt1 + theme(axis.title.x = element_blank(), 
+                                   legend.position = "none",
+                                   plot.title = element_blank()) +
+    ylab(expression(atop("q=1", "D2")))
+
+MDS_DNAplt2 <- MDS_DNAplt2 + theme(legend.position = "none",
+                                   plot.title = element_blank()) +
+    ylab(expression(atop("q=2", "D2")))
+
+
+MDS_RNAplt0 <- MDS_RNAplt0 + theme(axis.title.x = element_blank(), 
+                                   axis.title.y = element_blank(),
+                                   legend.position = "none") 
+
+MDS_RNAplt1 <- MDS_RNAplt1 + theme(axis.title.x = element_blank(), 
+                                   axis.title.y = element_blank(),
+                                   plot.title = element_blank()) 
+
+MDS_RNAplt2 <- MDS_RNAplt2 + theme(axis.title.y = element_blank(),
+                                   legend.position = "none",
+                                   plot.title = element_blank()) 
+
+
+# Combined plot
+plt <- (MDS_DNAplt0 | MDS_RNAplt0) /
+    (MDS_DNAplt1 | MDS_RNAplt1) /
+    (MDS_DNAplt2 | MDS_RNAplt2) / 
+    wrapped_legend +
+    plot_layout(heights = c(4,4,4,1.5)) +
+    plot_annotation(title = "NMDS on Hill-based Distance Matrix for q=0,1,2", 
+                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+
+plt
+
+ggsave("Hill.png", plot = plt, path = "./figures/",
+       width = 24, height = 28, units = "cm")
 
 
 
-
-
-
-
-
-
-
+################################################################################
 
 
 
