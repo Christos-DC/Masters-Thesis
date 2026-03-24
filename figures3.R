@@ -55,7 +55,7 @@ plt1 <- df1 %>% ggplot(aes(x=Day, y = Salt)) +
           axis.line = element_blank(),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()) +
-    labs(y = "Salt Concentration")
+    labs(y = "Salt Concentration (g/L)")
 
 
 # For the Control and Inhibition 2 group
@@ -84,14 +84,16 @@ plt2 <- df2 %>% ggplot(aes(x=Day, y = Salt)) +
           axis.text.y = element_text(size = 12),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank()) +
-    labs(y = "Salt Concentration")
+    labs(y = "Salt Concentration (g/L)")
     
 # Combined Plot
-(plt2 / plt1) +
+plt <- (plt2 / plt1) +
     plot_layout(axis_titles = "collect") +
     plot_annotation(title = "Salt concentration in the Continuous Stirred-Tank Reactor", 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
+ggsave("Salt-Concentration.png", plot = plt, path = "./figures/",
+       width = 28, height = 14, units = "cm")
 
 ################################################################################
 
