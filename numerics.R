@@ -41,6 +41,7 @@ numerics <- MDSnumeric(df = comps,
 #' specified kernel function.
 
 lambdas <- seq(0, 1, by = 0.05)
+n <- length(lambdas)
 ncomps <- 4
 pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
 comps <- pca.DNA$variates$X[, 1:ncomps]

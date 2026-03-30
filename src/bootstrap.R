@@ -127,7 +127,7 @@ MDSnumeric <- function(df, func, reactor, condition, timepts, distdf = FALSE,
             timeup <- abs(timepts[i+1] - timepts[i])
             
             # Calculating weighted average.
-            distval <- timedown * distvaldown + timeup * distvalup
+            distval <- (timedown * distvaldown + timeup * distvalup)/timetotal
             Distvals <- c(Distvals, distval)
         }
         

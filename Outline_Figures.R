@@ -588,10 +588,12 @@ PLS_INTG_MDSplt1
 
 
 
+################################################################################
+# Adding the PCA and PLS Bray-Curtis comparisons
 
 
-
-
+PCA_DNA_MDSplt0
+PCA_RNA_MDSplt0
 
 
 
