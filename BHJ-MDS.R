@@ -66,7 +66,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # Hill-based (DNA)
-q <- 1
+q <- 2
 DNAHill <- sampledist(DNA.1, hill, q=q)
 title <- paste("MDS plot for Hill-based (DNA) with q =", q)
 
@@ -78,7 +78,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # Hill-based (RNA)
-q <- 1
+q <- 2
 RNAHill <- sampledist(RNA.1, hill, q=q)
 title <- paste("MDS plot for Hill-based (RNA) with q =", q)
 

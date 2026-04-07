@@ -18,6 +18,7 @@ library(doParallel)
 
 # Data manipulation and visualisations
 library(ggplot2)
+library(ggtext)
 library(dplyr)
 library(readr)
 library(smacof) 

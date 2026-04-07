@@ -1,6 +1,6 @@
 
-#' This is a file that would be used to outline the figures used for my thesis
-#' that are made in R.
+#' This is a file that would be used to outline the figures for Chapter 4 for my 
+#' thesis that are made in R.
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
 ################################################################################
@@ -100,7 +100,7 @@ ggsave("Salt-Concentration.png", plot = plt, path = "./figures/",
 # Figure 3.3 - Bray-Curtis on DNA and RNA data
 
 DNABray <- sampledist(DNA.1, Bray_Curtis)
-title <- "DNA"
+title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
 MDSstructure$stress
@@ -109,7 +109,7 @@ MDS_DNAplt <- MDSstructure$mdsplot
 
 
 RNABray <- sampledist(RNA.1, Bray_Curtis)
-title <- "RNA"
+title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
 MDSstructure$stress
@@ -132,7 +132,7 @@ ggsave("Bray-Curtis.png", plot = plt, path = "./figures/",
 # Figure 3.4 - Jaccard on DNA and RNA data.
 
 DNAJacc <- sampledist(DNA.1, Jaccard)
-title <- "DNA"
+title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNAJacc, conditions, timepts, title)
 MDSstructure$stress
@@ -141,7 +141,7 @@ MDS_DNAplt <- MDSstructure$mdsplot
 
 
 RNAJacc <- sampledist(RNA.1, Jaccard)
-title <- "RNA"
+title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNAJacc, conditions, timepts, title)
 MDSstructure$stress
@@ -167,7 +167,7 @@ ggsave("Jaccard.png", plot = plt, path = "./figures/",
 
 # Figure - Hill-based on DNA and RNA data for q=0,1,2
 
-title <- "DNA"
+title <- expression(bold("DNA"))
 DNAHill0 <- sampledist(DNA.1, hill, q = 0)
 DNAHill1 <- sampledist(DNA.1, hill, q = 1)
 DNAHill2 <- sampledist(DNA.1, hill, q = 2)
@@ -185,7 +185,7 @@ MDSstructure$stress
 MDS_DNAplt2 <- MDSstructure$mdsplot
 
 
-title <- "RNA"
+title <- expression(bold("RNA"))
 RNAHill0 <- sampledist(RNA.1, hill, q = 0)
 RNAHill1 <- sampledist(RNA.1, hill, q = 1)
 RNAHill2 <- sampledist(RNA.1, hill, q = 2)
@@ -206,16 +206,16 @@ MDS_RNAplt2 <- MDSstructure$mdsplot
 # Adjusting the plots
 MDS_DNAplt0 <- MDS_DNAplt0 + theme(axis.title.x = element_blank(), 
                                    legend.position = "none") +
-    ylab(expression(atop("q=0", "D2"))) 
+    ylab(expression(atop(bold("q=0"), "D2"))) 
 
 MDS_DNAplt1 <- MDS_DNAplt1 + theme(axis.title.x = element_blank(), 
                                    legend.position = "none",
                                    plot.title = element_blank()) +
-    ylab(expression(atop("q=1", "D2")))
+    ylab(expression(atop(bold("q=1"), "D2")))
 
 MDS_DNAplt2 <- MDS_DNAplt2 + theme(legend.position = "none",
                                    plot.title = element_blank()) +
-    ylab(expression(atop("q=2", "D2")))
+    ylab(expression(atop(bold("q=2"), "D2")))
 
 
 MDS_RNAplt0 <- MDS_RNAplt0 + theme(axis.title.x = element_blank(), 

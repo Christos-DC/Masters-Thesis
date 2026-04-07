@@ -30,9 +30,15 @@ pca_plt1 <- df_compsDNA %>% ggplot(aes(x = PC1, y = PC2, shape = condition)) +
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "#FFFFFC", color = NA),
+          panel.background = element_rect(fill = "white", color = NA), #"#FFFFFC"
           panel.border = element_rect(fill = NA, color = "black"),
-          plot.title = element_text(size = 12, hjust = 0.5))
+          plot.title = element_textbox_simple(
+              fill = "lightgray",
+              linetype = 1,
+              linewidth = 0.2,
+              padding = margin(5, 5, 5, 5),
+              halign = 0.5, valign = 0.5
+          ))
 
 df_compsRNA <- data.frame(compsRNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
 prop_expl_var <- pca.RNA$prop_expl_var$X
@@ -47,9 +53,15 @@ pca_plt2 <- df_compsRNA %>% ggplot(aes(x = PC1, y = PC2, shape = condition)) +
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "#FFFFFC", color = NA),
+          panel.background = element_rect(fill = "white", color = NA),
           panel.border = element_rect(fill = NA, color = "black"),
-          plot.title = element_text(size = 12, hjust = 0.5))
+          plot.title = element_textbox_simple(
+              fill = "lightgray",
+              linetype = 1,
+              linewidth = 0.2,
+              padding = margin(5, 5, 5, 5),
+              halign = 0.5, valign = 0.5
+          ))
 
 (pca_plt1 + theme(legend.position = "none") | 
         pca_plt2 ) / wrapped_legend +
