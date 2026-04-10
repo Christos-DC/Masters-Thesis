@@ -90,7 +90,7 @@ plt2 <- df2 %>% ggplot(aes(x=Day, y = Salt)) +
 plt <- (plt2 / plt1) +
     plot_layout(axis_titles = "collect") +
     plot_annotation(title = "Salt concentration in the Continuous Stirred-Tank Reactor", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+                    theme = theme(plot.title = element_text(size = 22, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ggsave("Salt-Concentration.png", plot = plt, path = "./figures/",
        width = 28, height = 14, units = "cm")
@@ -118,14 +118,10 @@ MDS_RNAplt <- MDSstructure$mdsplot
 
 plt <- (MDS_DNAplt + theme(legend.position = "none")| MDS_RNAplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
             plot_layout(heights = c(5,1.5)) +
-    plot_annotation(title = "NMDS on Bray-Curtis Distance Matrix", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+    plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ggsave("Bray-Curtis.png", plot = plt, path = "./figures/",
        width = 24, height = 14, units = "cm")
-
-# ggsave("Bray-Curtis.png", plot = plt, path = "./figures/",
-#        width = 18, height = 20, units = "cm")
 
 ################################################################################
 
@@ -154,8 +150,7 @@ MDS_RNAplt <- MDS_RNAplt + theme(axis.title.y = element_blank())
 
 plt <- (MDS_DNAplt | MDS_RNAplt) / wrapped_legend + 
     plot_layout(heights = c(5,1.5)) +
-    plot_annotation(title = "NMDS on Jaccard Distance Matrix", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+    plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 plt
 
 ggsave("Jaccard.png", plot = plt, path = "./figures/",
@@ -237,10 +232,7 @@ plt <- (MDS_DNAplt0 | MDS_RNAplt0) /
     (MDS_DNAplt2 | MDS_RNAplt2) / 
     wrapped_legend +
     plot_layout(heights = c(4,4,4,1.5)) +
-    plot_annotation(title = "NMDS on Hill-based Distance Matrix for q=0,1,2", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
-
-plt
+    plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ggsave("Hill.png", plot = plt, path = "./figures/",
        width = 24, height = 28, units = "cm")

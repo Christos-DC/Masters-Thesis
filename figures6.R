@@ -19,7 +19,7 @@ compsRNA <- pca.RNA$variates$X
 
 
 # Making my own PCA plots for DNA and RNA
-df_compsDNA <- data.frame(compsDNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+df_compsDNA <- data.frame(compsDNA[,c(1,2)], "condition" = conditions, "colour" = hex_colors)
 prop_expl_var <- pca.DNA$prop_expl_var$X
 xlabel <- paste("PC1: ", round(100*prop_expl_var[1]), "% expl. var", sep = "")
 ylabel <- paste("PC2: ", round(100*prop_expl_var[2]), "% expl. var", sep = "")
@@ -43,7 +43,7 @@ pca_plt1 <- df_compsDNA %>% ggplot(aes(x = PC1, y = PC2, shape = condition)) +
               face = "bold"
           ))
 
-df_compsRNA <- data.frame(compsRNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+df_compsRNA <- data.frame(compsRNA[,c(1,2)], "condition" = conditions, "colour" = hex_colors)
 prop_expl_var <- pca.RNA$prop_expl_var$X
 xlabel <- paste("PC1: ", round(100*prop_expl_var[1]), "% expl. var", sep = "")
 ylabel <- paste("PC2: ", round(100*prop_expl_var[2]), "% expl. var", sep = "")
@@ -104,7 +104,7 @@ rownames(compsRNA) <- rownames(RNA.1)
 
 
 # Making my own PLS plots for DNA and RNA
-df_compsDNA <- data.frame(compsDNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+df_compsDNA <- data.frame(compsDNA[,c(1,2)], "condition" = conditions, "colour" = hex_colors)
 prop_expl_var <- pls.result$prop_expl_var$X
 xlabel <- paste("Variate 1: ", round(100*prop_expl_var[1]), "% expl. var", sep = "")
 ylabel <- paste("Variate 2: ", round(100*prop_expl_var[2]), "% expl. var", sep = "")
@@ -128,7 +128,7 @@ pls_plt1 <- df_compsDNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
               face = "bold"
           ))
 
-df_compsRNA <- data.frame(compsRNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
+df_compsRNA <- data.frame(compsRNA[,c(1,2)], "condition" = conditions, "colour" = hex_colors)
 prop_expl_var <- pls.result$prop_expl_var$Y
 xlabel <- paste("Variate 1: ", round(100*prop_expl_var[1]), "% expl. var", sep = "")
 ylabel <- paste("Variate 2: ", round(100*prop_expl_var[2]), "% expl. var", sep = "")
