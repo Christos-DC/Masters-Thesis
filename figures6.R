@@ -70,10 +70,7 @@ pca_plt2 <- df_compsRNA %>% ggplot(aes(x = PC1, y = PC2, shape = condition)) +
 plt <- (pca_plt1 + theme(legend.position = "none") | 
         pca_plt2 ) / wrapped_legend +
     plot_layout(heights = c(5,1.3)) +
-    plot_annotation(title = "PCA plots for DNA and RNA Datasets", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
-
-plt
+    plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ggsave("PCA.png", plot = plt, path = "./figures/",
        width = 24, height = 14, units = "cm")
@@ -155,8 +152,7 @@ pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
 plt <- (pls_plt1 + theme(legend.position = "none") | 
         pls_plt2) / wrapped_legend +
     plot_layout(heights = c(5,1.3)) +
-    plot_annotation(title = "PLS plots for DNA and RNA Datasets", 
-                    theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
+    plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 plt
 
 ggsave("PLS.png", plot = plt, path = "./figures/",
