@@ -79,8 +79,174 @@ ggsave("PCA.png", plot = plt, path = "./figures/",
 
 ################################################################################
 
+# Plotting the Bray-Curtis, PCA Bray-Curtis (λ = 0 and 1)
+
+# Original Bray-Curtis
+DNABray <- sampledist(DNA.1, Bray_Curtis)
+title <- expression(bold("DNA"))
+
+MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_BC_DNAplt <- MDSstructure$mdsplot
+MDS_BC_DNAplt <- MDS_BC_DNAplt + theme(axis.title.x = element_blank(), 
+                                 legend.position = "none") +
+    ylab(expression(atop(bold("Bray-Curtis"), "D2"))) 
+    
 
 
+RNABray <- sampledist(RNA.1, Bray_Curtis)
+title <- expression(bold("RNA"))
+
+MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_BC_RNAplt <- MDSstructure$mdsplot
+MDS_BC_RNAplt <- MDS_BC_RNAplt + theme(axis.title.x = element_blank(), 
+                                 axis.title.y = element_blank(),
+                                 legend.position = "none")
+
+
+
+# DNA: PCA Bary-Curtis with and without reactor time-scale
+ncomps <- 4
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+DNAcomps <- pca.DNA$variates$X
+
+DNA_PCABray0 <- sampledist(DNAcomps, PCA_Bray_Curtis)
+title <- expression(bold("DNA"))
+
+MDSstructure <- mdsplotfunc(DNA_PCABray0, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_PCABC0_DNAplt <- MDSstructure$mdsplot
+MDS_PCABC0_DNAplt <- MDS_PCABC0_DNAplt + theme(axis.title.x = element_blank(), 
+                                               legend.position = "none",
+                                               plot.title = element_blank()) +
+    ylab(expression(atop(bold("PCA Bray-Curtis (λ = 0)"), "D2")))
+
+
+lambda <- 1
+DNA_PCABray1 <- penaltyfunc(df = DNAcomps,
+                            metric = PCA_Bray_Curtis,
+                            reactor = reactors,
+                            timepts = timepts,
+                            kernelfunc = linearkernel,
+                            lambda = lambda)
+title <- expression(bold("DNA"))
+
+MDSstructure <- mdsplotfunc(DNA_PCABray1, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_PCABC1_DNAplt <- MDSstructure$mdsplot
+MDS_PCABC1_DNAplt <- MDS_PCABC1_DNAplt + theme(legend.position = "none",
+                                               plot.title = element_blank()) +
+    ylab(expression(atop(bold("PCA Bray-Curtis (λ = 1)"), "D2")))
+
+
+
+# RNA: PCA Bary-Curtis with and without reactor time-scale
+ncomps <- 4
+pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+RNAcomps <- pca.RNA$variates$X
+
+RNA_PCABray0 <- sampledist(RNAcomps, PCA_Bray_Curtis)
+title <- expression(bold("RNA"))
+
+MDSstructure <- mdsplotfunc(RNA_PCABray0, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_PCABC0_RNAplt <- MDSstructure$mdsplot
+MDS_PCABC0_RNAplt <- MDS_PCABC0_RNAplt + theme(axis.title.x = element_blank(), 
+                                               axis.title.y = element_blank(),
+                                               plot.title = element_blank()) 
+
+
+lambda <- 1
+RNA_PCABray1 <- penaltyfunc(df = RNAcomps,
+                            metric = PCA_Bray_Curtis,
+                            reactor = reactors,
+                            timepts = timepts,
+                            kernelfunc = linearkernel,
+                            lambda = lambda)
+title <- expression(bold("RNA"))
+
+MDSstructure <- mdsplotfunc(RNA_PCABray1, conditions, timepts, title)
+MDSstructure$stress
+
+MDS_PCABC1_RNAplt <- MDSstructure$mdsplot
+MDS_PCABC1_RNAplt <- MDS_PCABC1_RNAplt + theme(legend.position = "none",
+                                               axis.title.y = element_blank(),
+                                               plot.title = element_blank()) 
+
+
+plt <- (MDS_BC_DNAplt | MDS_BC_RNAplt) /
+    (MDS_PCABC0_DNAplt | MDS_PCABC0_RNAplt) /
+    (MDS_PCABC1_DNAplt | MDS_PCABC1_RNAplt) / 
+    wrapped_legend + 
+    plot_layout(heights = c(4,4,4,1.5))
+
+ggsave("singleBray.png", plot = plt, path = "./figures/",
+       width = 24, height = 28, units = "cm")
+
+################################################################################
+
+# Numerics on the MDS plots from the last section
+
+# DNA
+DNA_BrayNum <- MDSnumeric(df = DNABray,
+                      func = Bray_Curtis,
+                      reactor = reactors,
+                      condition = conditions,
+                      timepts = timepts,
+                      distdf = TRUE)
+DNA_BrayNum
+
+
+DNA_PCABrayNum0 <- MDSnumeric(df = DNA_PCABray0,
+                          func = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          condition = conditions,
+                          timepts = timepts,
+                          distdf = TRUE)
+DNA_PCABrayNum0
+
+
+DNA_PCABrayNum1 <- MDSnumeric(df = DNA_PCABray1,
+                          func = PCA_Bray_Curtis,
+                          reactor = reactors,
+                          condition = conditions,
+                          timepts = timepts,
+                          distdf = TRUE)
+DNA_PCABrayNum1
+
+
+# RNA
+RNA_BrayNum <- MDSnumeric(df = RNABray,
+                          func = Bray_Curtis,
+                          reactor = reactors,
+                          condition = conditions,
+                          timepts = timepts,
+                          distdf = TRUE)
+RNA_BrayNum
+
+
+RNA_PCABrayNum0 <- MDSnumeric(df = RNA_PCABray0,
+                              func = PCA_Bray_Curtis,
+                              reactor = reactors,
+                              condition = conditions,
+                              timepts = timepts,
+                              distdf = TRUE)
+RNA_PCABrayNum0
+
+
+RNA_PCABrayNum1 <- MDSnumeric(df = RNA_PCABray1,
+                              func = PCA_Bray_Curtis,
+                              reactor = reactors,
+                              condition = conditions,
+                              timepts = timepts,
+                              distdf = TRUE)
+RNA_PCABrayNum1
 
 ################################################################################
 # Figure - Custom PLS plot
