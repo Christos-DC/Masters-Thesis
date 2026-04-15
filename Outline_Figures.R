@@ -590,7 +590,7 @@ PLS_INTG_MDSplt1 <- PLS_INTG_MDSplt1 +
 PLS_INTG_MDSplt1
 
 
-(PLS_DNA_MDSplt0 | PLS_RNA_MDSplt0 | PLS_INTG_MDSplt0) /
+plt <- (PLS_DNA_MDSplt0 | PLS_RNA_MDSplt0 | PLS_INTG_MDSplt0) /
     (PLS_DNA_MDSplt1 | PLS_RNA_MDSplt1 | PLS_INTG_MDSplt1) /
     wrapped_legend +
     plot_layout(heights = c(4,4,2)) +
@@ -598,7 +598,8 @@ PLS_INTG_MDSplt1
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5),
                                   plot.margin = unit(c(0.5, 3, 0, 0), "cm")))
 
-
+ggsave("test.png", plot = plt, path = "./figures/",
+       width = 32, height = 21, units = "cm")
 
 ################################################################################
 # Adding the PCA and PLS Bray-Curtis comparisons
