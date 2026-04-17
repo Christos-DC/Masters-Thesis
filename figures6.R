@@ -439,7 +439,7 @@ MDSstructure$stress
 MDS_PLSBC0_DNAplt <- MDSstructure$mdsplot
 MDS_PLSBC0_DNAplt <- MDS_PLSBC0_DNAplt + theme(axis.title.x = element_blank(), 
                                                legend.position = "none") +
-    ylab(expression(atop(bold("PCA Bray-Curtis (λ = 0)"), "D2")))
+    ylab(expression(atop(bold("PLS Bray-Curtis (λ = 0)"), "D2")))
 
 
 lambda <- 1
@@ -457,7 +457,7 @@ MDSstructure$stress
 MDS_PLSBC1_DNAplt <- MDSstructure$mdsplot
 MDS_PLSBC1_DNAplt <- MDS_PLSBC1_DNAplt + theme(legend.position = "none",
                                                plot.title = element_blank()) +
-    ylab(expression(atop(bold("PCA Bray-Curtis (λ = 1)"), "D2")))
+    ylab(expression(atop(bold("PLS Bray-Curtis (λ = 1)"), "D2")))
 
 # RNA
 RNA_PLSBray0 <- sampledist(PLScompsRNA, PCA_Bray_Curtis)
