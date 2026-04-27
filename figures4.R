@@ -5,7 +5,7 @@ source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/d
 
 ################################################################################
 
-# Figure 3.2 - Salt Concentration
+# Salt Concentration
 which(DNA.3$NaCl..g.L. != RNA.3$NaCl..g.L.)
 
 SaltCon <- DNA.3$NaCl..g.L. 
@@ -97,27 +97,37 @@ ggsave("Salt-Concentration.png", plot = plt, path = "./figures/",
 
 ################################################################################
 
-# Figure 3.3 - Bray-Curtis on DNA and RNA data
+# Bray-Curtis on DNA and RNA data
 
 DNABray <- sampledist(DNA.1, Bray_Curtis)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
-MDSstructure$stress
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
-MDS_DNAplt <- MDSstructure$mdsplot
+MDS_DNAplt <- MDSstructure$mdsplot +
+    theme(legend.position = "none") + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
 
 
 RNABray <- sampledist(RNA.1, Bray_Curtis)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
-MDSstructure$stress
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
-MDS_RNAplt <- MDSstructure$mdsplot
+MDS_RNAplt <- MDSstructure$mdsplot + 
+    theme(axis.title.y = element_blank()) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
-plt <- (MDS_DNAplt + theme(legend.position = "none")| MDS_RNAplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
-            plot_layout(heights = c(5,1.5)) +
+plt <- (MDS_DNAplt| MDS_RNAplt) / 
+    wrapped_legend + 
+    plot_layout(heights = c(5,1.5)) +
     plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
 
 ggsave("Bray-Curtis.png", plot = plt, path = "./figures/",
@@ -125,38 +135,41 @@ ggsave("Bray-Curtis.png", plot = plt, path = "./figures/",
 
 ################################################################################
 
-# Figure 3.4 - Jaccard on DNA and RNA data.
+# Jaccard on DNA and RNA data.
 
 DNAJacc <- sampledist(DNA.1, Jaccard)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNAJacc, conditions, timepts, title)
-MDSstructure$stress
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
-MDS_DNAplt <- MDSstructure$mdsplot
+MDS_DNAplt <- MDSstructure$mdsplot + 
+    theme(legend.position = "none") + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
 
 RNAJacc <- sampledist(RNA.1, Jaccard)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNAJacc, conditions, timepts, title)
-MDSstructure$stress
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
-MDS_RNAplt <- MDSstructure$mdsplot
+MDS_RNAplt <- MDSstructure$mdsplot +
+    theme(axis.title.y = element_blank()) + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
 
-MDS_DNAplt <- MDS_DNAplt + theme(legend.position = "none")
-MDS_RNAplt <- MDS_RNAplt + theme(axis.title.y = element_blank())
-
-plt <- (MDS_DNAplt | MDS_RNAplt) / wrapped_legend + 
+plt <- (MDS_DNAplt | MDS_RNAplt) / 
+    wrapped_legend + 
     plot_layout(heights = c(5,1.5)) +
     plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
-plt
 
 ggsave("Jaccard.png", plot = plt, path = "./figures/",
        width = 24, height = 14, units = "cm")
-
-
 
 ################################################################################
 
@@ -167,17 +180,39 @@ DNAHill0 <- sampledist(DNA.1, hill, q = 0)
 DNAHill1 <- sampledist(DNA.1, hill, q = 1)
 DNAHill2 <- sampledist(DNA.1, hill, q = 2)
 
+## DNA q = 0
 MDSstructure <- mdsplotfunc(DNAHill0, conditions, timepts, title)
-MDSstructure$stress
-MDS_DNAplt0 <- MDSstructure$mdsplot
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_DNAplt0 <- MDSstructure$mdsplot + 
+    theme(axis.title.x = element_blank(), 
+          legend.position = "none") +
+    ylab(expression(atop(bold("q=0"), "D2"))) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
+## DNA q = 1
 MDSstructure <- mdsplotfunc(DNAHill1, conditions, timepts, title)
-MDSstructure$stress
-MDS_DNAplt1 <- MDSstructure$mdsplot
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_DNAplt1 <- MDSstructure$mdsplot + 
+    theme(axis.title.x = element_blank(),
+          legend.position = "none",
+          plot.title = element_blank()) +
+    ylab(expression(atop(bold("q=1"), "D2"))) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
+## DNA q = 2
 MDSstructure <- mdsplotfunc(DNAHill2, conditions, timepts, title)
-MDSstructure$stress
-MDS_DNAplt2 <- MDSstructure$mdsplot
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_DNAplt2 <- MDSstructure$mdsplot + 
+    theme(legend.position = "none", 
+          plot.title = element_blank()) +
+    ylab(expression(atop(bold("q=2"), "D2"))) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
 
 title <- expression(bold("RNA"))
@@ -185,46 +220,38 @@ RNAHill0 <- sampledist(RNA.1, hill, q = 0)
 RNAHill1 <- sampledist(RNA.1, hill, q = 1)
 RNAHill2 <- sampledist(RNA.1, hill, q = 2)
 
+## RNA q = 0
 MDSstructure <- mdsplotfunc(RNAHill0, conditions, timepts, title)
-MDSstructure$stress
-MDS_RNAplt0 <- MDSstructure$mdsplot
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_RNAplt0 <- MDSstructure$mdsplot + 
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "none") +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
+## RNA q = 1
 MDSstructure <- mdsplotfunc(RNAHill1, conditions, timepts, title)
-MDSstructure$stress
-MDS_RNAplt1 <- MDSstructure$mdsplot
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_RNAplt1 <- MDSstructure$mdsplot + 
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          plot.title = element_blank()) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
+## RNA q = 2
 MDSstructure <- mdsplotfunc(RNAHill2, conditions, timepts, title)
-MDSstructure$stress
-MDS_RNAplt2 <- MDSstructure$mdsplot
-
-
-# Adjusting the plots
-MDS_DNAplt0 <- MDS_DNAplt0 + theme(axis.title.x = element_blank(), 
-                                   legend.position = "none") +
-    ylab(expression(atop(bold("q=0"), "D2"))) 
-
-MDS_DNAplt1 <- MDS_DNAplt1 + theme(axis.title.x = element_blank(), 
-                                   legend.position = "none",
-                                   plot.title = element_blank()) +
-    ylab(expression(atop(bold("q=1"), "D2")))
-
-MDS_DNAplt2 <- MDS_DNAplt2 + theme(legend.position = "none",
-                                   plot.title = element_blank()) +
-    ylab(expression(atop(bold("q=2"), "D2")))
-
-
-MDS_RNAplt0 <- MDS_RNAplt0 + theme(axis.title.x = element_blank(), 
-                                   axis.title.y = element_blank(),
-                                   legend.position = "none") 
-
-MDS_RNAplt1 <- MDS_RNAplt1 + theme(axis.title.x = element_blank(), 
-                                   axis.title.y = element_blank(),
-                                   plot.title = element_blank()) 
-
-MDS_RNAplt2 <- MDS_RNAplt2 + theme(axis.title.y = element_blank(),
-                                   legend.position = "none",
-                                   plot.title = element_blank()) 
-
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+MDS_RNAplt2 <- MDSstructure$mdsplot + 
+    theme(axis.title.y = element_blank(),
+          legend.position = "none",
+          plot.title = element_blank()) +
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
 
 # Combined plot
 plt <- (MDS_DNAplt0 | MDS_RNAplt0) /
