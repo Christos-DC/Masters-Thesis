@@ -3,16 +3,17 @@
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
 
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
-
-
 # PCA Bray-Curtis (DNA)
 ncomps <- 4
-pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.DNA$variates$X[, 1:ncomps]
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.DNA$variates$X
+
+# Find out the meanings of the components used for plotting
+# plotLoadings(pca.DNA, comp = 1, contrib = 'max', method = 'mean')
+# plotLoadings(pca.DNA, comp = 2, contrib = 'max', method = 'mean')
+
+# top_vars_comp1 <- selectVar(pca.DNA, comp = 1)$value
+# head(top_vars_comp1)
 
 DNA_PCABray <- sampledist(comps, PCA_Bray_Curtis)
 title <- paste("MDS plot: PCA Bray-Curtis (DNA) with", ncomps, "components.", sep = " ")

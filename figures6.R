@@ -32,7 +32,7 @@ pca_plt1 <- df_compsDNA %>% ggplot(aes(x = PC1, y = PC2, shape = condition)) +
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "white", color = NA), #"#FFFFFC"
+          panel.background = element_rect(fill = "white", color = NA), 
           panel.border = element_rect(fill = NA, color = "black"),
           plot.title = element_textbox_simple(
               fill = "lightgray",
@@ -418,6 +418,7 @@ stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 MDS_PLSBC0_RNAplt <- MDSstructure$mdsplot
 MDS_PLSBC0_RNAplt <- MDS_PLSBC0_RNAplt + 
     theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
           legend.position = "none")  + 
     annotate("text", x = -Inf, y = -Inf, 
              label = stress, hjust = -0.15, vjust = -0.8,
@@ -438,7 +439,8 @@ stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
 MDS_PLSBC1_RNAplt <- MDSstructure$mdsplot
 MDS_PLSBC1_RNAplt <- MDS_PLSBC1_RNAplt + 
-    theme(legend.position = "none",
+    theme(axis.title.y = element_blank(),
+          legend.position = "none",
           plot.title = element_blank()) + 
     annotate("text", x = -Inf, y = -Inf, 
              label = stress, hjust = -0.15, vjust = -0.8,
@@ -456,6 +458,7 @@ stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 MDS_PLSBC0_INTplt <- MDSstructure$mdsplot
 MDS_PLSBC0_INTplt <- MDS_PLSBC0_INTplt + 
     theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
           legend.position = "none") + 
     annotate("text", x = -Inf, y = -Inf, 
              label = stress, hjust = -0.15, vjust = -0.8,
@@ -476,7 +479,8 @@ stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
 
 MDS_PLSBC1_INTplt <- MDSstructure$mdsplot
 MDS_PLSBC1_INTplt <- MDS_PLSBC1_INTplt + 
-    theme(legend.position = c(1.2,1.05),
+    theme(axis.title.y = element_blank(),
+          legend.position = c(1.2,1.05),
           plot.title = element_blank()) + 
     annotate("text", x = -Inf, y = -Inf, 
              label = stress, hjust = -0.15, vjust = -0.8,
