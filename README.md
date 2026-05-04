@@ -24,4 +24,22 @@ Motivated by an anaerobic digestion study, this work analyses how anaerobic dige
 ## File Structure
 The code was developed in R under version 4.5.3. Ensure that your version of R is at least 4.5.3 or above for the code to run properly.
 
+1. Essential scripts:
+    - `data.R`: Libraries used, dataset collected and data-cleaning steps (data not available on github).
+    - `src/`:
+        - `metrics.R`: Defining the metrics used for this thesis.
+        - `plotting.R`: Plot functions repeatedly used in code.
+        - `kernels.R`: kernel functions defined for Component Bray-Curtis.
+        - `numerics.R`: Blocked Bootstrapping algorithm constructed.
+
+2. Thesis Figures:
+    - `figures4.R`: Chapter 4 figures.
+    - `figures6.R`: Chapter 6 figures.
+    - `appendix.R`: Appendix figures.
+
+3. Example code:
+    - `BHJ-MDS.R`: Plotting NMDS plots for Bray-Curtis, Hill-based, and Jaccard metrics.
+    - `PCA-BC`: Testing PCA Bray-Curtis on data.
+    - `numerics.R`: Calculating mean distance values and bootstrapped statistics on NMDS plots.
+    - `N-integration.R`: Performing N-Integration on DNA and RNA datasets.
 
