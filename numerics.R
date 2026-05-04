@@ -3,19 +3,13 @@
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
 
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
-
-
 # Gathering the numerical statistics (DNA)
 ncomps <- 4
-pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.DNA$variates$X[, 1:ncomps]
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.DNA$variates$X
 
 numerics <- MDSnumeric(df = comps,
-                       func = PCA_Bray_Curtis,
+                       func = CompBC,
                        reactor = reactors,
                        condition = conditions,
                        timepts = timepts,
@@ -24,11 +18,11 @@ numerics <- MDSnumeric(df = comps,
 
 # Gathering the numerical statistics (RNA)
 ncomps <- 4
-pca.RNA <- pca(RNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.RNA$variates$X[, 1:ncomps]
+pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.RNA$variates$X
 
 numerics <- MDSnumeric(df = comps,
-                       func = PCA_Bray_Curtis,
+                       func = CompBC,
                        reactor = reactors,
                        condition = conditions,
                        timepts = timepts,
@@ -43,8 +37,8 @@ numerics <- MDSnumeric(df = comps,
 lambdas <- seq(0, 1, by = 0.05)
 n <- length(lambdas)
 ncomps <- 4
-pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.DNA$variates$X[, 1:ncomps]
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.DNA$variates$X
 
 # Setting up the matrices needed for plotting (DNA)
 lambdadf <- matrix(NA, nrow = n, ncol = 4)
@@ -56,9 +50,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                               func = PCA_Bray_Curtis, 
+                               func = CompBC, 
                                reactor = reactors,
                                condition = conditions,
                                timepts = timepts,
@@ -96,8 +90,8 @@ lambdaDNA
 # Getting the PCA for RNA data
 lambdas <- seq(0, 1, by = 0.05)
 ncomps <- 4
-pca.RNA <- pca(RNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.RNA$variates$X[, 1:ncomps]
+pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.RNA$variates$X
 
 # Setting up the matrices needed for plotting 
 lambdadf <- matrix(NA, nrow = n, ncol = 4)
@@ -109,9 +103,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     RNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -143,17 +137,6 @@ lambdaRNA <- lambdadf %>% ggplot(aes(x=lambda)) +
     scale_color_manual(values = base_colors)
 
 lambdaRNA
-
-
-
-
-
-
-
-
-
-
-
 
 
 

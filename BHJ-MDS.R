@@ -3,14 +3,8 @@
 source("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code/data.R")
 
 
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
-
-
 # Bray-Curtis (DNA)
-DNABray <- sampledist(DNA.1, Bray_Curtis)
+DNABray <- sampledist(DNA.1, BrayCurtis)
 title <- "MDS plot for Bray-Curtis(DNA)"
 
 MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
@@ -21,7 +15,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 numerics <- MDSnumeric(df = DNABray,
-           func = PCA_Bray_Curtis,
+           func = BrayCurtis,
            reactor = reactors,
            condition = conditions,
            timepts = timepts,
@@ -30,7 +24,7 @@ numerics
 
 
 # Bray-Curtis (RNA)
-RNABray <- sampledist(RNA.1, Bray_Curtis)
+RNABray <- sampledist(RNA.1, BrayCurtis)
 title <- "MDS plot for Bray-Curtis (RNA)"
 
 MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
@@ -67,7 +61,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 # Hill-based (DNA)
 q <- 2
-DNAHill <- sampledist(DNA.1, hill, q=q)
+DNAHill <- sampledist(DNA.1, Hill, q=q)
 title <- paste("MDS plot for Hill-based (DNA) with q =", q)
 
 MDSstructure <- mdsplotfunc(DNAHill, conditions, timepts, title)
@@ -79,7 +73,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 # Hill-based (RNA)
 q <- 2
-RNAHill <- sampledist(RNA.1, hill, q=q)
+RNAHill <- sampledist(RNA.1, Hill, q=q)
 title <- paste("MDS plot for Hill-based (RNA) with q =", q)
 
 MDSstructure <- mdsplotfunc(RNAHill, conditions, timepts, title)
@@ -87,16 +81,6 @@ MDSstructure$stress
 
 MDSplt <- MDSstructure$mdsplot
 MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
-
-
-
-
-
-
-
-
-
-
 
 
 

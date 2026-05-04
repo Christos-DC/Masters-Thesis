@@ -25,15 +25,6 @@ library(smacof)
 library(scales)
 library(patchwork)
 
-# Installing Packages for Heatmaps via github
-# 
-# library(devtools)
-# install_github("jokergoo/ComplexHeatmap")
-
-# library(ComplexHeatmap)
-# library(circlize)
-
-
 # Gather the source R codes
 setwd("~/Documents/Masters Degree/Masters Research/Code Scripts/Polished Code")
 source("src/metrics.R", local = TRUE)

@@ -15,7 +15,7 @@ comps <- pca.DNA$variates$X
 # top_vars_comp1 <- selectVar(pca.DNA, comp = 1)$value
 # head(top_vars_comp1)
 
-DNA_PCABray <- sampledist(comps, PCA_Bray_Curtis)
+DNA_PCABray <- sampledist(comps, CompBC)
 title <- paste("MDS plot: PCA Bray-Curtis (DNA) with", ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(DNA_PCABray, conditions, timepts, title)
@@ -30,7 +30,7 @@ ncomps <- 4
 pca.RNA <- pca(RNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
 comps <- pca.RNA$variates$X[, 1:ncomps]
 
-RNA_PCABray <- sampledist(comps, PCA_Bray_Curtis)
+RNA_PCABray <- sampledist(comps, CompBC)
 title <- paste("MDS plot: PCA Bray-Curtis (RNA) with", ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(RNA_PCABray, conditions, timepts, title)
@@ -41,7 +41,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 
-# Time-adjusted Bray-Curtis (DNA)
+# Reactor Time-Scale Bray-Curtis (DNA)
 lambdas <- seq(0, 1, by = 0.05)
 ncomps <- 4
 pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
@@ -51,7 +51,7 @@ comps <- pca.DNA$variates$X[, 1:ncomps]
 dfs <- list() #this holds all the distance matrices that have been adjusted based on a particular lambda value.
 k <- 1
 for (lambda in lambdas){
-    dfs[[k]] <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    dfs[[k]] <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     k <- k + 1
 }
 
@@ -69,7 +69,7 @@ mdsplots[[21]]
 
 
 
-# Time-adjusted Bray-Curtis (RNA)
+# Reactor Time-Scale Bray-Curtis (RNA)
 lambdas <- seq(0, 1, by = 0.05)
 ncomps <- 4
 pca.RNA <- pca(RNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
@@ -79,7 +79,7 @@ comps <- pca.RNA$variates$X[, 1:ncomps]
 dfs <- list() #this holds all the distance matrices that have been adjusted based on a particular lambda value.
 k <- 1
 for (lambda in lambdas){
-    dfs[[k]] <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    dfs[[k]] <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     k <- k + 1
 }
 
@@ -119,11 +119,11 @@ plot(lambdas, stressvals, type = 'l', xlab = "λ values", ylab = "Stress Values"
 # Since I am performing mds on the PCA data transformation, why don't I try the euclidean metric.
 
 ncomps <- 4
-pca.DNA <- pca(DNA.1 + 0.001, ncomp = 10, logratio = 'CLR')
-comps <- pca.DNA$variates$X[, 1:ncomps]
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
+comps <- pca.DNA$variates$X
 
 DNA_PCABray <- sampledist(comps, euclidean)
-title <- paste("MDS plot: PCA Bray-Curtis (DNA) with", ncomps, "components.", sep = " ")
+title <- paste("MDS plot: Using Euclidean on ", ncomps, " PCA components (DNA).", sep = " ")
 
 MDSstructure <- mdsplotfunc(DNA_PCABray, conditions, timepts, title)
 MDSstructure$stress

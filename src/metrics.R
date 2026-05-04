@@ -8,7 +8,7 @@
 
 
 # Calculates the Bray-Curtis value between two sample groups
-Bray_Curtis <- function(sample1, sample2){
+BrayCurtis <- function(sample1, sample2){
     #' Inputs:
     #'      sample1: A vector of integers representing the first sample group
     #'      sample2: A vector of integers representing the second sample group
@@ -35,7 +35,7 @@ Bray_Curtis <- function(sample1, sample2){
 
 
 # Calculates the PCA Bray-Curtis value between two sample groups.
-PCA_Bray_Curtis <- function(sample1, sample2){
+CompBC <- function(sample1, sample2){
     #' Inputs:
     #'      sample1: A vector of integers representing the first sample group
     #'      sample2: A vector of integers representing the second sample group
@@ -152,7 +152,7 @@ NESS <- function(sample1, sample2, m = 5){
 
 # Hill Based Metric (Measures dissimilarity)
 # Inspired by Oskar Modin's (2020) paper.
-hill <- function(sample1, sample2, q=1){
+Hill <- function(sample1, sample2, q=1){
     #' Inputs:
     #'      sample1: A vector of integers representing the first sample group
     #'      sample2: A vector of integers representing the second sample group
@@ -252,40 +252,6 @@ sampledist <- function(X, dis.func, precision = 5, ...){
     
     return(dis_table)
 }
-
-
-
-
-#' # Testing a new metric
-#' expMan <- function(sample1, sample2){
-#'     #' Inputs:
-#'     #'      sample1: A vector of integers representing the first sample group
-#'     #'      sample2: A vector of integers representing the second sample group
-#'     #'
-#'     #' Returns:
-#'     #'      Exponential Manhattan value between two sample groups
-#' 
-#'     # Error: Plot lengths are different
-#'     if (length(sample1) != length(sample2)){
-#'         stop("Plots are not the same length.")
-#'     }
-#' 
-#'     Manhattan <- sum(abs(sample1 - sample2))
-#'     SampleSum <- sum(abs(sample1) + abs(sample2))
-#' 
-#'     # Samples are completely distinct
-#'     if (Manhattan == SampleSum) return(1)
-#'     else return(1 - exp(-Manhattan))
-#' }
-
-
-
-
-# Second testing metric
-
-
-
-
 
 
 

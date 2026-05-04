@@ -99,7 +99,7 @@ ggsave("Salt-Concentration.png", plot = plt, path = "./figures/",
 
 # Bray-Curtis on DNA and RNA data
 
-DNABray <- sampledist(DNA.1, Bray_Curtis)
+DNABray <- sampledist(DNA.1, BrayCurtis)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
@@ -113,7 +113,7 @@ MDS_DNAplt <- MDSstructure$mdsplot +
 
 
 
-RNABray <- sampledist(RNA.1, Bray_Curtis)
+RNABray <- sampledist(RNA.1, BrayCurtis)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
@@ -176,9 +176,9 @@ ggsave("Jaccard.png", plot = plt, path = "./figures/",
 # Figure - Hill-based on DNA and RNA data for q=0,1,2
 
 title <- expression(bold("DNA"))
-DNAHill0 <- sampledist(DNA.1, hill, q = 0)
-DNAHill1 <- sampledist(DNA.1, hill, q = 1)
-DNAHill2 <- sampledist(DNA.1, hill, q = 2)
+DNAHill0 <- sampledist(DNA.1, Hill, q = 0)
+DNAHill1 <- sampledist(DNA.1, Hill, q = 1)
+DNAHill2 <- sampledist(DNA.1, Hill, q = 2)
 
 ## DNA q = 0
 MDSstructure <- mdsplotfunc(DNAHill0, conditions, timepts, title)
@@ -216,9 +216,9 @@ MDS_DNAplt2 <- MDSstructure$mdsplot +
 
 
 title <- expression(bold("RNA"))
-RNAHill0 <- sampledist(RNA.1, hill, q = 0)
-RNAHill1 <- sampledist(RNA.1, hill, q = 1)
-RNAHill2 <- sampledist(RNA.1, hill, q = 2)
+RNAHill0 <- sampledist(RNA.1, Hill, q = 0)
+RNAHill1 <- sampledist(RNA.1, Hill, q = 1)
+RNAHill2 <- sampledist(RNA.1, Hill, q = 2)
 
 ## RNA q = 0
 MDSstructure <- mdsplotfunc(RNAHill0, conditions, timepts, title)
@@ -267,21 +267,6 @@ ggsave("Hill.png", plot = plt, path = "./figures/",
 
 
 ################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

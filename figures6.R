@@ -82,7 +82,7 @@ ggsave("PCA.png", plot = plt, path = "./figures/",
 # Plotting the Bray-Curtis, PCA Bray-Curtis (λ = 0 and 1)
 
 # Original Bray-Curtis
-DNABray <- sampledist(DNA.1, Bray_Curtis)
+DNABray <- sampledist(DNA.1, BrayCurtis)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNABray, conditions, timepts, title)
@@ -99,7 +99,7 @@ MDS_BC_DNAplt <- MDS_BC_DNAplt +
     
 
 
-RNABray <- sampledist(RNA.1, Bray_Curtis)
+RNABray <- sampledist(RNA.1, BrayCurtis)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNABray, conditions, timepts, title)
@@ -121,7 +121,7 @@ ncomps <- 4
 pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
 DNAcomps <- pca.DNA$variates$X
 
-DNA_PCABray0 <- sampledist(DNAcomps, PCA_Bray_Curtis)
+DNA_PCABray0 <- sampledist(DNAcomps, CompBC)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNA_PCABray0, conditions, timepts, title)
@@ -140,7 +140,7 @@ MDS_PCABC0_DNAplt <- MDS_PCABC0_DNAplt +
 
 lambda <- 1
 DNA_PCABray1 <- penaltyfunc(df = DNAcomps,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -166,7 +166,7 @@ ncomps <- 4
 pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
 RNAcomps <- pca.RNA$variates$X
 
-RNA_PCABray0 <- sampledist(RNAcomps, PCA_Bray_Curtis)
+RNA_PCABray0 <- sampledist(RNAcomps, CompBC)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNA_PCABray0, conditions, timepts, title)
@@ -184,7 +184,7 @@ MDS_PCABC0_RNAplt <- MDS_PCABC0_RNAplt +
 
 lambda <- 1
 RNA_PCABray1 <- penaltyfunc(df = RNAcomps,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -219,7 +219,7 @@ ggsave("singleBray.png", plot = plt, path = "./figures/",
 
 # DNA
 DNA_BrayNum <- MDSnumeric(df = DNABray,
-                      func = Bray_Curtis,
+                      func = BrayCurtis,
                       reactor = reactors,
                       condition = conditions,
                       timepts = timepts,
@@ -228,7 +228,7 @@ DNA_BrayNum
 
 
 DNA_PCABrayNum0 <- MDSnumeric(df = DNA_PCABray0,
-                          func = PCA_Bray_Curtis,
+                          func = CompBC,
                           reactor = reactors,
                           condition = conditions,
                           timepts = timepts,
@@ -237,7 +237,7 @@ DNA_PCABrayNum0
 
 
 DNA_PCABrayNum1 <- MDSnumeric(df = DNA_PCABray1,
-                          func = PCA_Bray_Curtis,
+                          func = CompBC,
                           reactor = reactors,
                           condition = conditions,
                           timepts = timepts,
@@ -247,7 +247,7 @@ DNA_PCABrayNum1
 
 # RNA
 RNA_BrayNum <- MDSnumeric(df = RNABray,
-                          func = Bray_Curtis,
+                          func = BrayCurtis,
                           reactor = reactors,
                           condition = conditions,
                           timepts = timepts,
@@ -256,7 +256,7 @@ RNA_BrayNum
 
 
 RNA_PCABrayNum0 <- MDSnumeric(df = RNA_PCABray0,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -265,7 +265,7 @@ RNA_PCABrayNum0
 
 
 RNA_PCABrayNum1 <- MDSnumeric(df = RNA_PCABray1,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -343,7 +343,7 @@ plt <- (pls_plt1 + theme(legend.position = "none") |
         pls_plt2) / wrapped_legend +
     plot_layout(heights = c(5,1.3)) +
     plot_annotation(theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
-plt
+
 
 ggsave("PLS.png", plot = plt, path = "./figures/",
        width = 24, height = 14, units = "cm")
@@ -370,7 +370,7 @@ rownames(PLScompsRNA) <- rownames(RNA.1)
 
 
 # DNA
-DNA_PLSBray0 <- sampledist(PLScompsDNA, PCA_Bray_Curtis)
+DNA_PLSBray0 <- sampledist(PLScompsDNA, CompBC)
 title <- expression(bold("DNA"))
 
 MDSstructure <- mdsplotfunc(DNA_PLSBray0, conditions, timepts, title)
@@ -388,7 +388,7 @@ MDS_PLSBC0_DNAplt <- MDS_PLSBC0_DNAplt +
 
 lambda <- 1
 DNA_PLSBray1 <- penaltyfunc(df = PLScompsDNA,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -409,7 +409,7 @@ MDS_PLSBC1_DNAplt <- MDS_PLSBC1_DNAplt +
 
 
 # RNA
-RNA_PLSBray0 <- sampledist(PLScompsRNA, PCA_Bray_Curtis)
+RNA_PLSBray0 <- sampledist(PLScompsRNA, CompBC)
 title <- expression(bold("RNA"))
 
 MDSstructure <- mdsplotfunc(RNA_PLSBray0, conditions, timepts, title)
@@ -427,7 +427,7 @@ MDS_PLSBC0_RNAplt <- MDS_PLSBC0_RNAplt +
 
 lambda <- 1
 RNA_PLSBray1 <- penaltyfunc(df = PLScompsRNA,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -449,7 +449,7 @@ MDS_PLSBC1_RNAplt <- MDS_PLSBC1_RNAplt +
 # Integrated
 INTcomps <- (PLScompsDNA + PLScompsRNA) / 2
 
-INT_PLSBray0 <- sampledist(INTcomps, PCA_Bray_Curtis)
+INT_PLSBray0 <- sampledist(INTcomps, CompBC)
 title <- expression(bold("Mean Latent Comps (DNA-RNA)"))
 
 MDSstructure <- mdsplotfunc(INT_PLSBray0, conditions, timepts, title)
@@ -467,7 +467,7 @@ MDS_PLSBC0_INTplt <- MDS_PLSBC0_INTplt +
 
 lambda <- 1
 INT_PLSBray1 <- penaltyfunc(df = INTcomps,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -506,7 +506,7 @@ ggsave("multiBray.png", plot = plt, path = "./figures/",
 
 # DNA
 DNA_PLSBrayNum0 <- MDSnumeric(df = DNA_PLSBray0,
-                          func = Bray_Curtis,
+                          func = BrayCurtis,
                           reactor = reactors,
                           condition = conditions,
                           timepts = timepts,
@@ -515,7 +515,7 @@ DNA_PLSBrayNum0
 
 
 DNA_PLSBrayNum1 <- MDSnumeric(df = DNA_PLSBray1,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -525,7 +525,7 @@ DNA_PLSBrayNum1
 
 # RNA
 RNA_PLSBrayNum0 <- MDSnumeric(df = RNA_PLSBray0,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -535,7 +535,7 @@ RNA_PLSBrayNum0
 
 
 RNA_PLSBray1Num <- MDSnumeric(df = RNA_PLSBray1,
-                          func = Bray_Curtis,
+                          func = BrayCurtis,
                           reactor = reactors,
                           condition = conditions,
                           timepts = timepts,
@@ -545,7 +545,7 @@ RNA_PLSBray1Num
 
 # Integrated
 INT_PLSBrayNum0 <- MDSnumeric(df = INT_PLSBray0,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -554,29 +554,12 @@ INT_PLSBrayNum0
 
 
 INT_PLSBrayNum1 <- MDSnumeric(df = INT_PLSBray1,
-                              func = PCA_Bray_Curtis,
+                              func = CompBC,
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
                               distdf = TRUE)
 INT_PLSBrayNum1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

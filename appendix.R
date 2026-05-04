@@ -20,9 +20,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -75,9 +75,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, linearkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, linearkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -130,9 +130,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, expkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, expkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -182,9 +182,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, expkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, expkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -236,9 +236,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, logkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, logkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -288,9 +288,9 @@ colnames(CI_vals) <- c("lambda", "C_low", "C_high", "I1_low", "I1_high", "I2_low
 # Gathering the numerical information 
 for (i in 1:n){
     lambda <- lambdas[i]
-    df <- penaltyfunc(comps, PCA_Bray_Curtis, reactors, timepts, logkernel, lambda)
+    df <- penaltyfunc(comps, CompBC, reactors, timepts, logkernel, lambda)
     DNAnumerics <- MDSnumeric(df = df[, -c(99,100)], 
-                              func = PCA_Bray_Curtis, 
+                              func = CompBC, 
                               reactor = reactors,
                               condition = conditions,
                               timepts = timepts,
@@ -346,7 +346,7 @@ DNAcomps <- pca.DNA$variates$X
 # λ = 0
 lambda <- 0
 NoTime <- penaltyfunc(df = DNAcomps,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -368,7 +368,7 @@ MDS_NoTime  <- MDS_NoTime  +
 # Linear, λ = 1
 lambda <- 1
 Linear1 <- penaltyfunc(df = DNAcomps,
-                       metric = PCA_Bray_Curtis,
+                       metric = CompBC,
                        reactor = reactors,
                        timepts = timepts,
                        kernelfunc = linearkernel,
@@ -392,7 +392,7 @@ MDS_Linear1 <- MDS_Linear1 +
 # Exponential, λ = 1
 lambda <- 1
 Exp1 <- penaltyfunc(df = DNAcomps,
-                       metric = PCA_Bray_Curtis,
+                       metric = CompBC,
                        reactor = reactors,
                        timepts = timepts,
                        kernelfunc = expkernel,
@@ -413,7 +413,7 @@ MDS_Exp1 <- MDS_Exp1 +
 # Logarithmic, λ = 1
 lambda <- 1
 Log1 <- penaltyfunc(df = DNAcomps,
-                    metric = PCA_Bray_Curtis,
+                    metric = CompBC,
                     reactor = reactors,
                     timepts = timepts,
                     kernelfunc = logkernel,
@@ -455,7 +455,7 @@ RNAcomps <- pca.RNA$variates$X
 # λ = 0
 lambda <- 0
 NoTime <- penaltyfunc(df = RNAcomps,
-                      metric = PCA_Bray_Curtis,
+                      metric = CompBC,
                       reactor = reactors,
                       timepts = timepts,
                       kernelfunc = linearkernel,
@@ -477,7 +477,7 @@ MDS_NoTime  <- MDS_NoTime  +
 # Linear, λ = 1
 lambda <- 1
 Linear1 <- penaltyfunc(df = RNAcomps,
-                       metric = PCA_Bray_Curtis,
+                       metric = CompBC,
                        reactor = reactors,
                        timepts = timepts,
                        kernelfunc = linearkernel,
@@ -501,7 +501,7 @@ MDS_Linear1 <- MDS_Linear1 +
 # Exponential, λ = 1
 lambda <- 1
 Exp1 <- penaltyfunc(df = RNAcomps,
-                    metric = PCA_Bray_Curtis,
+                    metric = CompBC,
                     reactor = reactors,
                     timepts = timepts,
                     kernelfunc = expkernel,
@@ -522,7 +522,7 @@ MDS_Exp1 <- MDS_Exp1 +
 # Logarithmic, λ = 1
 lambda <- 1
 Log1 <- penaltyfunc(df = RNAcomps,
-                    metric = PCA_Bray_Curtis,
+                    metric = CompBC,
                     reactor = reactors,
                     timepts = timepts,
                     kernelfunc = logkernel,

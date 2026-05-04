@@ -20,7 +20,7 @@ pch_vals <- c(
     "inhib_2" = 15
 )
 
-
+# Defining the components
 compsDNA <- pls.result$variates$X
 compsRNA <- pls.result$variates$Y
 rownames(compsRNA) <- rownames(RNA.1)
@@ -37,9 +37,10 @@ pls_plt1 <- df_compsDNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "#FFFFF9", color = NA),
+          panel.background = element_rect(fill = "white", color = NA),
           panel.border = element_rect(fill = NA, color = "black"),
-          plot.title = element_text(size = 12, hjust = 0.5))
+          plot.title = element_text(size = 12, hjust = 0.5),
+          legend.position = "none")
 
 df_compsRNA <- data.frame(compsRNA[,-c(3,4)], "condition" = conditions, "colour" = hex_colors)
 
@@ -51,12 +52,13 @@ pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
     theme(legend.title = element_text("Condition")) +
     theme_minimal() +
     theme(plot.background = element_rect(fill = "white", color = NA),
-          panel.background = element_rect(fill = "#FFFFF9", color = NA),
+          panel.background = element_rect(fill = "white", color = NA),
           panel.border = element_rect(fill = NA, color = "black"),
-          plot.title = element_text(size = 12, hjust = 0.5))
+          plot.title = element_text(size = 12, hjust = 0.5),
+          axis.title.y = element_blank())
 
-(pls_plt1 + theme(legend.position = "none") | 
-        pls_plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+# Plot the PLS plots
+(pls_plt1 | pls_plt2) / wrapped_legend +
     plot_layout(heights = c(5,1.3)) +
     plot_annotation(title = "PLS for DNA and RNA", 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -66,7 +68,7 @@ pls_plt2 <- df_compsRNA %>% ggplot(aes(x = comp1, y = comp2, shape = condition))
 cor(compsDNA, compsRNA)
 
 # For the DNA component
-DNA_PLSBray <- sampledist(compsDNA, PCA_Bray_Curtis)
+DNA_PLSBray <- sampledist(compsDNA, CompBC)
 title <- paste("MDS plot: PLS Bray-Curtis (DNA) with", ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(DNA_PLSBray, conditions, timepts, title)
@@ -78,7 +80,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 
 # For the RNA component
-RNA_PLSBray <- sampledist(compsRNA, PCA_Bray_Curtis)
+RNA_PLSBray <- sampledist(compsRNA, CompBC)
 title <- paste("MDS plot: PLS Bray-Curtis (RNA) with", ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(RNA_PLSBray, conditions, timepts, title)
@@ -93,8 +95,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 compsCombined <- (compsDNA + compsRNA)/2
 
 
-
-Comb_PLSBray <- sampledist(compsCombined, PCA_Bray_Curtis)
+Comb_PLSBray <- sampledist(compsCombined, CompBC)
 title <- paste("MDS plot: PLS Bray-Curtis (DNA and RNA) with", 2*ncomps, "components.", sep = " ")
 
 MDSstructure <- mdsplotfunc(Comb_PLSBray, conditions, timepts, title)
@@ -106,7 +107,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 # Seeing the numerical side of things
 numerics <- MDSnumeric(df = compsCombined,
-                       func = PCA_Bray_Curtis,
+                       func = CompBC,
                        reactor = reactors,
                        condition = conditions,
                        timepts = timepts,
@@ -120,14 +121,14 @@ c1 <- (compsDNA + compsRNA)/2
 c2 <- cbind(compsDNA, compsRNA)
 
 c1_PLSBray <- penaltyfunc(df = c1,
-                          metric = PCA_Bray_Curtis,
+                          metric = CompBC,
                           reactor = reactors,
                           timepts = timepts,
                           kernelfunc = linearkernel,
                           lambda = 0)
 
 c2_PLSBray <- penaltyfunc(df = c2,
-                          metric = PCA_Bray_Curtis,
+                          metric = CompBC,
                           reactor = reactors,
                           timepts = timepts,
                           kernelfunc = linearkernel,
@@ -136,10 +137,10 @@ c2_PLSBray <- penaltyfunc(df = c2,
 MDS1 <- mdsplotfunc(c1_PLSBray, conditions, timepts, "Average Components")
 MDS2 <- mdsplotfunc(c2_PLSBray, conditions, timepts, "Joining Components")
 
-plt1 <- MDS1$mdsplot
-plt2 <- MDS2$mdsplot
+plt1 <- MDS1$mdsplot + theme(legend.position = "none")
+plt2 <- MDS2$mdsplot + theme(axis.title.y = element_blank())
 
-(plt1 + theme(legend.position = "none") | plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+(plt1 | plt2) / wrapped_legend +
     plot_layout(heights = c(5,1.5)) +
     plot_annotation(title = "Comparing Approach 1 and 2", 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -153,21 +154,15 @@ X2 <- logratio.transfo(RNA.1 + 0.001, logratio = "CLR")
 
 pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
 
+# Defining the components
 compsDNA <- pls.result$variates$X
 compsRNA <- pls.result$variates$Y
 rownames(compsRNA) <- rownames(RNA.1)
 
-
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
-
 # For the DNA component
-# DNA_PCABray <- sampledist(compsDNA, PCA_Bray_Curtis)
 lambda <- 1
 DNA_PLSBray <- penaltyfunc(df = compsDNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
@@ -184,7 +179,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 # For the RNA component
 RNA_PLSBray <- penaltyfunc(df = compsRNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
@@ -205,7 +200,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 compsCombined <- cbind(compsDNA, compsRNA)
 
 Comb_PLSBray <- penaltyfunc(df = compsCombined,
-                            metric = PCA_Bray_Curtis,
+                            metric = CompBC,
                             reactor = reactors,
                             timepts = timepts,
                             kernelfunc = linearkernel,
@@ -221,7 +216,7 @@ MDSplt / wrapped_legend + plot_layout(heights = c(5, 1.3))
 
 # Seeing the numerical side of things
 numerics <- MDSnumeric(df = compsCombined,
-                       func = PCA_Bray_Curtis,
+                       func = CompBC,
                        reactor = reactors,
                        condition = conditions,
                        timepts = timepts,
@@ -236,14 +231,14 @@ c1 <- (compsDNA + compsRNA)/2
 c2 <- cbind(compsDNA, compsRNA)
 
 c1_PLSBray <- penaltyfunc(df = c1,
-                          metric = PCA_Bray_Curtis,
+                          metric = CompBC,
                           reactor = reactors,
                           timepts = timepts,
                           kernelfunc = linearkernel,
                           lambda = lambda)
 
 c2_PLSBray <- penaltyfunc(df = c2,
-                          metric = PCA_Bray_Curtis,
+                          metric = CompBC,
                           reactor = reactors,
                           timepts = timepts,
                           kernelfunc = linearkernel,
@@ -252,10 +247,10 @@ c2_PLSBray <- penaltyfunc(df = c2,
 MDS1 <- mdsplotfunc(c1_PLSBray, conditions, timepts, "Average Components")
 MDS2 <- mdsplotfunc(c2_PLSBray, conditions, timepts, "Joining Components")
 
-plt1 <- MDS1$mdsplot
-plt2 <- MDS2$mdsplot
+plt1 <- MDS1$mdsplot + theme(legend.position = "none")
+plt2 <- MDS2$mdsplot + theme(axis.title.y = element_blank())
 
-(plt1 + theme(legend.position = "none") | plt2 + theme(axis.title.y = element_blank())) / wrapped_legend +
+(plt1 | plt2) / wrapped_legend +
     plot_layout(heights = c(5,1.5)) +
     plot_annotation(title = "Comparing Approach 1 and 2", 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -265,11 +260,6 @@ plt2 <- MDS2$mdsplot
 
 # Comparing the PCA and PLS approaches (when Lambda = 0)
 ncomps <- 4
-
-# Defining the parameters
-conditions <- DNA.3$condition
-reactors <- DNA.3$reactor
-timepts <- DNA.3$week_from_salt1
 
 # Get PCA components
 pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = 'CLR')
@@ -291,8 +281,8 @@ rownames(compsRNA) <- rownames(RNA.1)
 
 
 # Comparing DNA (lambda = 0)
-DNA_PCABray <- sampledist(PCAcompsDNA, PCA_Bray_Curtis)
-DNA_PLSBray <- sampledist(PLScompsDNA, PCA_Bray_Curtis)
+DNA_PCABray <- sampledist(PCAcompsDNA, CompBC)
+DNA_PLSBray <- sampledist(PLScompsDNA, CompBC)
 
 MDS_DNA_PCA <- mdsplotfunc(DNA_PCABray, conditions, timepts, "PCA (DNA)")
 MDS_DNA_PLS <- mdsplotfunc(DNA_PLSBray, conditions, timepts, "PLS (DNA)")
@@ -300,11 +290,11 @@ MDS_DNA_PLS <- mdsplotfunc(DNA_PLSBray, conditions, timepts, "PLS (DNA)")
 MDS_DNA_PCA$stress
 MDS_DNA_PLS$stress
 
-DNA_PCAplt <- MDS_DNA_PCA$mdsplot
-DNA_PLSplt <- MDS_DNA_PLS$mdsplot
+DNA_PCAplt <- MDS_DNA_PCA$mdsplot + theme(legend.position = "none")
+DNA_PLSplt <- MDS_DNA_PLS$mdsplot + theme(axis.title.y = element_blank())
 
 title <- paste("PCA vs PLS on DNA data using", ncomps, "components.", sep = " ")
-combined_plt <- (DNA_PCAplt + theme(legend.position = "none") | DNA_PLSplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
+combined_plt <- (DNA_PCAplt | DNA_PLSplt) / wrapped_legend + 
     plot_layout(heights = c(5, 1.3)) +
     plot_annotation(title = title, 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -313,8 +303,8 @@ combined_plt
 
 
 # Comparing RNA (lambda = 0)
-RNA_PCABray <- sampledist(PCAcompsRNA, PCA_Bray_Curtis)
-RNA_PLSBray <- sampledist(PLScompsRNA, PCA_Bray_Curtis)
+RNA_PCABray <- sampledist(PCAcompsRNA, CompBC)
+RNA_PLSBray <- sampledist(PLScompsRNA, CompBC)
 
 MDS_RNA_PCA <- mdsplotfunc(RNA_PCABray, conditions, timepts, "PCA (RNA)")
 MDS_RNA_PLS <- mdsplotfunc(RNA_PLSBray, conditions, timepts, "PLS (RNA)")
@@ -322,11 +312,11 @@ MDS_RNA_PLS <- mdsplotfunc(RNA_PLSBray, conditions, timepts, "PLS (RNA)")
 MDS_RNA_PCA$stress
 MDS_RNA_PLS$stress
 
-RNA_PCAplt <- MDS_RNA_PCA$mdsplot
-RNA_PLSplt <- MDS_RNA_PLS$mdsplot
+RNA_PCAplt <- MDS_RNA_PCA$mdsplot + theme(legend.position = "none")
+RNA_PLSplt <- MDS_RNA_PLS$mdsplot + theme(axis.title.y = element_blank())
 
 title <- paste("PCA vs PLS on RNA data using", ncomps, "components.", sep = " ")
-combined_plt <- (RNA_PCAplt + theme(legend.position = "none") | RNA_PLSplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
+combined_plt <- (RNA_PCAplt | RNA_PLSplt) / wrapped_legend + 
     plot_layout(heights = c(5, 1.3)) +
     plot_annotation(title = title, 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -337,6 +327,7 @@ combined_plt
 
 # Putting these into a four panel plot for comparing the DNA and RNA for PCA and PLS methods
 title <- paste("NMDS Plots: PCA vs PLS on both the DNA and RNA datasets with", ncomps, "components.", sep = " ")
+
 (DNA_PCAplt + theme(legend.position = "none", axis.title.x = element_blank()) | 
         DNA_PLSplt + theme(axis.title.y = element_blank(), axis.title.x = element_blank(), legend.position = "none")) /
     (RNA_PCAplt + theme(legend.position = "none") | 
@@ -354,13 +345,13 @@ title <- paste("NMDS Plots: PCA vs PLS on both the DNA and RNA datasets with", n
 # Comparing DNA (lambda = 1)
 lambda <- 1
 DNA_PCABray <- penaltyfunc(df = PCAcompsDNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
                            lambda = lambda)
 DNA_PLSBray <- penaltyfunc(df = PLScompsDNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
@@ -372,11 +363,11 @@ MDS_DNA_PLS <- mdsplotfunc(DNA_PLSBray, conditions, timepts, "PLS")
 MDS_DNA_PCA$stress
 MDS_DNA_PLS$stress
 
-DNA_PCAplt <- MDS_DNA_PCA$mdsplot
-DNA_PLSplt <- MDS_DNA_PLS$mdsplot
+DNA_PCAplt <- MDS_DNA_PCA$mdsplot + theme(legend.position = "none")
+DNA_PLSplt <- MDS_DNA_PLS$mdsplot + theme(axis.title.y = element_blank())
 
 title <- paste("PCA vs PLS on DNA data using", ncomps, "components.", sep = " ")
-combined_plt <- (DNA_PCAplt + theme(legend.position = "none") | DNA_PLSplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
+combined_plt <- (DNA_PCAplt | DNA_PLSplt) / wrapped_legend + 
     plot_layout(heights = c(5, 1.3)) +
     plot_annotation(title = title, 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -388,13 +379,13 @@ combined_plt
 # Comparing RNA (lambda = 1)
 lambda <- 1
 RNA_PCABray <- penaltyfunc(df = PCAcompsRNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
                            lambda = lambda)
 RNA_PLSBray <- penaltyfunc(df = PLScompsRNA,
-                           metric = PCA_Bray_Curtis,
+                           metric = CompBC,
                            reactor = reactors,
                            timepts = timepts,
                            kernelfunc = linearkernel,
@@ -406,11 +397,11 @@ MDS_RNA_PLS <- mdsplotfunc(RNA_PLSBray, conditions, timepts, "PLS")
 MDS_RNA_PCA$stress
 MDS_RNA_PLS$stress
 
-RNA_PCAplt <- MDS_RNA_PCA$mdsplot
+RNA_PCAplt <- MDS_RNA_PCA$mdsplot + theme(legend.position = "none") 
 RNA_PLSplt <- MDS_RNA_PLS$mdsplot
 
 title <- paste("PCA vs PLS on RNA data using", ncomps, "components.", sep = " ")
-combined_plt <- (RNA_PCAplt + theme(legend.position = "none") | RNA_PLSplt + theme(axis.title.y = element_blank())) / wrapped_legend + 
+combined_plt <- (RNA_PCAplt | RNA_PLSplt) / wrapped_legend + 
     plot_layout(heights = c(5, 1.3)) +
     plot_annotation(title = title, 
                     theme = theme(plot.title = element_text(size = 18, face = "bold", hjust = 0.5, vjust = 0.5)))
@@ -443,49 +434,10 @@ rownames(compsRNA) <- rownames(RNA.1)
 cor(PCAcompsDNA, PCAcompsRNA)
 cor(PLScompsDNA, PLScompsRNA)
 
-# (Attempt) Integrating with PCA components like it's done with PLS (show why this doesn't work)
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
 
 
 
