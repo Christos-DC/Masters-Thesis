@@ -25,7 +25,7 @@ Motivated by an anaerobic digestion study, this work analyses how anaerobic dige
 The code was developed in R under version 4.5.3. Ensure that your version of R is at least 4.5.3 or above for the code to run properly.
 
 1. Essential scripts:
-    - `data.R`: Libraries used, dataset collected and data-cleaning steps (data not available on github).
+    - `data.R`: Libraries used, dataset collected and data-cleaning steps (data is not publicy available).
     - `src/`:
         - `metrics.R`: Defining the metrics used for this thesis.
         - `plotting.R`: Plot functions repeatedly used in code.
