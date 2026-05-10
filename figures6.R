@@ -356,6 +356,37 @@ diag(cor(compsDNA, compsRNA))
 
 ################################################################################
 
+# Calculating the correlation between PCA and PLS components for DNA and RNA 
+
+# PCA
+ncomps <- 4
+pca.DNA <- pca(DNA.1 + 0.001, ncomp = ncomps, logratio = "CLR")
+pca.RNA <- pca(RNA.1 + 0.001, ncomp = ncomps, logratio = "CLR")
+
+PCAcompsDNA <- pca.DNA$variates$X
+PCAcompsRNA <- pca.RNA$variates$X
+
+
+# PLS
+ncomps <- 4
+X1 <- logratio.transfo(DNA.1 + 0.001, logratio = "CLR")
+X2 <- logratio.transfo(RNA.1 + 0.001, logratio = "CLR")
+
+pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
+PLScompsDNA <- pls.result$variates$X
+PLScompsRNA <- pls.result$variates$Y
+rownames(PLScompsRNA) <- rownames(RNA.1)
+
+
+# Correlation matrix for DNA
+cor(PCAcompsDNA, PLScompsDNA)
+
+# Correlation matrix for RNA
+cor(PCAcompsRNA, PLScompsRNA)
+
+
+################################################################################
+
 # NMDS on DNA, RNA and Integrated (for PLS Bray-Curtis with and without time-scale)
 
 #PLS
