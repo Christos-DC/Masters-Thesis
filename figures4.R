@@ -267,7 +267,145 @@ ggsave("Hill.png", plot = plt, path = "./figures/",
 
 
 ################################################################################
+#PLS
+ncomps <- 4
+X1 <- logratio.transfo(DNA.1 + 0.001, logratio = "CLR")
+X2 <- logratio.transfo(RNA.1 + 0.001, logratio = "CLR")
 
+pls.result <- pls(X=X1, Y=X2, ncomp = ncomps, mode = "canonical")
+PLScompsDNA <- pls.result$variates$X
+PLScompsRNA <- pls.result$variates$Y
+rownames(PLScompsRNA) <- rownames(RNA.1)
+
+
+# DNA
+DNA_PLSBray0 <- sampledist(PLScompsDNA, CompBC)
+title <- expression(bold("DNA"))
+
+MDSstructure <- mdsplotfunc(DNA_PLSBray0, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC0_DNAplt <- MDSstructure$mdsplot
+MDS_PLSBC0_DNAplt <- MDS_PLSBC0_DNAplt + 
+    theme(axis.title.x = element_blank(),
+          legend.position = "none") +
+    ylab(expression(atop(bold("PLS Bray-Curtis (λ = 0)"), "D2"))) + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+
+lambda <- 1
+DNA_PLSBray1 <- penaltyfunc(df = PLScompsDNA,
+                            metric = CompBC,
+                            reactor = reactors,
+                            timepts = timepts,
+                            kernelfunc = linearkernel,
+                            lambda = lambda)
+title <- expression(bold("DNA"))
+
+MDSstructure <- mdsplotfunc(DNA_PLSBray1, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC1_DNAplt <- MDSstructure$mdsplot
+MDS_PLSBC1_DNAplt <- MDS_PLSBC1_DNAplt + 
+    theme(legend.position = "none",
+          plot.title = element_blank()) +
+    ylab(expression(atop(bold("PLS Bray-Curtis (λ = 1)"), "D2"))) + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+
+# RNA
+RNA_PLSBray0 <- sampledist(PLScompsRNA, CompBC)
+title <- expression(bold("RNA"))
+
+MDSstructure <- mdsplotfunc(RNA_PLSBray0, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC0_RNAplt <- MDSstructure$mdsplot
+MDS_PLSBC0_RNAplt <- MDS_PLSBC0_RNAplt + 
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "none")  + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+
+lambda <- 1
+RNA_PLSBray1 <- penaltyfunc(df = PLScompsRNA,
+                            metric = CompBC,
+                            reactor = reactors,
+                            timepts = timepts,
+                            kernelfunc = linearkernel,
+                            lambda = lambda)
+title <- expression(bold("RNA"))
+
+MDSstructure <- mdsplotfunc(RNA_PLSBray1, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC1_RNAplt <- MDSstructure$mdsplot
+MDS_PLSBC1_RNAplt <- MDS_PLSBC1_RNAplt + 
+    theme(axis.title.y = element_blank(),
+          legend.position = "none",
+          plot.title = element_blank()) + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+# Integrated
+INTcomps <- (PLScompsDNA + PLScompsRNA) / 2
+
+INT_PLSBray0 <- sampledist(INTcomps, CompBC)
+title <- expression(bold("Mean Latent Comps (DNA-RNA)"))
+
+MDSstructure <- mdsplotfunc(INT_PLSBray0, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC0_INTplt <- MDSstructure$mdsplot
+MDS_PLSBC0_INTplt <- MDS_PLSBC0_INTplt + 
+    theme(axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = "none") + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+
+lambda <- 1
+INT_PLSBray1 <- penaltyfunc(df = INTcomps,
+                            metric = CompBC,
+                            reactor = reactors,
+                            timepts = timepts,
+                            kernelfunc = linearkernel,
+                            lambda = lambda)
+title <- expression(bold("Mean Latent Comps (DNA-RNA)"))
+
+MDSstructure <- mdsplotfunc(INT_PLSBray1, conditions, timepts, title)
+stress <- paste(100*round(MDSstructure$stress, 4), "%", sep = "")
+
+MDS_PLSBC1_INTplt <- MDSstructure$mdsplot
+MDS_PLSBC1_INTplt <- MDS_PLSBC1_INTplt + 
+    theme(axis.title.y = element_blank(),
+          legend.position = c(1.2,1.05),
+          plot.title = element_blank()) + 
+    annotate("text", x = -Inf, y = -Inf, 
+             label = stress, hjust = -0.15, vjust = -0.8,
+             size = 5)
+
+
+
+# Combine the plots
+plt <- (MDS_PLSBC0_DNAplt | MDS_PLSBC0_RNAplt | MDS_PLSBC0_INTplt) /
+    (MDS_PLSBC1_DNAplt | MDS_PLSBC1_RNAplt | MDS_PLSBC1_INTplt) +
+    wrapped_legend +
+    plot_layout(heights = c(4,4,1.5)) +
+    plot_annotation(theme = theme(plot.margin = unit(c(0.5, 3, 0, 0), "cm")))
+
+ggsave("multiBray.png", plot = plt, path = "./presentation_figures/",
+       width = 32, height = 18, units = "cm")
 
 
 
